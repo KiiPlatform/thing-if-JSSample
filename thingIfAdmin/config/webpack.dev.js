@@ -157,7 +157,10 @@ module.exports = webpackMerge(commonConfig, {
     process: true,
     module: false,
     clearImmediate: false,
-    setImmediate: false
+    setImmediate: false,
+    fs: 'empty',
+    child_process: 'empty',
+    readline: 'empty'
   }
 
 });

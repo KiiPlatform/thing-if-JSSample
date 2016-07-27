@@ -258,6 +258,9 @@ module.exports = {
     crypto: 'empty',
     module: false,
     clearImmediate: false,
+    fs: 'empty',
+    child_process: 'empty',
+    readline: 'empty',
     setImmediate: false
   }
 
