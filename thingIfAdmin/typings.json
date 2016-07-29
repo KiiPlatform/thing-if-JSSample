@@ -11,6 +11,7 @@
     "webpack": "registry:dt/webpack#1.12.9+20160523035535"
   },
   "dependencies": {
-    "lodash": "registry:npm/lodash#4.0.0+20160416211519"
+    "lodash": "registry:npm/lodash#4.0.0+20160416211519",
+    "thing-if-sdk": "npm:thing-if-sdk"
   }
 }

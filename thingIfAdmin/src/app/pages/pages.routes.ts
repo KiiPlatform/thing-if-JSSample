@@ -1,5 +1,7 @@
 import {RouterConfig} from '@angular/router';
 import {Dashboard} from './dashboard/dashboard.component';
+import {State} from './state/state.component';
+import {Trigger} from './trigger/trigger.component';
 import {Pages} from './pages.component';
 import {Forms} from './forms/forms.component';
 import {Inputs} from './forms/components/inputs/inputs.component';
@@ -26,28 +28,56 @@ export const PagesRoutes:RouterConfig = [
         }
       },
       {
-        path: 'forms',
-        component: Forms,
+        path: 'state',
+        component: State,
         data: {
           menu: {
-            title: 'Form Elements',
-            icon: 'ion-compose',
+            title: 'States',
+            icon: 'ion-ios-albums',
             selected: false,
             expanded: false,
-            order: 400,
+            order: 0
           }
-        },
-        children: [
-          {
-            path: 'inputs',
-            component: Inputs,
-            data: {
-              menu: {
-                title: 'Form Inputs',
-              }
-            }
+        }
+      },
+      {
+        path: 'command',
+        component: State,
+        data: {
+          menu: {
+            title: 'Commands',
+            icon: 'ion-arrow-return-right',
+            selected: false,
+            expanded: false,
+            order: 0
           }
-        ]
+        }
+      },
+      {
+        path: 'trigger',
+        component: Trigger,
+        data: {
+          menu: {
+            title: 'Triggers',
+            icon: 'ion-ios-bolt',
+            selected: false,
+            expanded: false,
+            order: 0
+          }
+        }
+      },
+      {
+        path: 'notification',
+        component: State,
+        data: {
+          menu: {
+            title: 'Notifications',
+            icon: 'ion-ios-bell',
+            selected: false,
+            expanded: false,
+            order: 0
+          }
+        }
       }
   
     ]
