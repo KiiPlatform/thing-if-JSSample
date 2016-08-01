@@ -53,9 +53,10 @@ export class PieChart {
 
   private _updatePieCharts() {
     let getRandomArbitrary = (min, max) => { return Math.random() * (max - min) + min };
-
+    let myself = this.charts;
     jQuery('.pie-charts .chart').each(function(index, chart) {
-      jQuery(chart).data('easyPieChart').update(getRandomArbitrary(55, 90));
+      let obj = myself[index]['percent'];
+      jQuery(chart).data('easyPieChart').update(obj);
     });
   }
 }

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "lodash": "registry:npm/lodash#4.0.0+20160416211519",
+    "ng2-slider-component": "npm:ng2-slider-component",
     "thing-if-sdk": "npm:thing-if-sdk"
   }
 }

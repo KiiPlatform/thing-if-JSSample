@@ -1,7 +1,82 @@
-<div class="row">
-  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <pie-chart></pie-chart>
+<div class="widgets">
+
+  <div class="row">
+    <div class="col-md-6">
+      <ba-card title="Onboarded Info" baCardClass="with-scroll">
+        <div class="form-group">
+          <label>Thing ID :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{thingID}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Access Token :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{accessToken}}" disabled>
+        </div>
+      </ba-card>
+
+    </div>
+    <div class="col-md-6">
+      <ba-card title="MQTT End point Authentications" baCardClass="with-scroll">
+        <div class="form-group">
+          <label>User Name :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttUsername}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Password :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttPassword}}" disabled>
+        </div>
+
+
+      </ba-card>
+    </div>
+  </div>
+  <div class="row">
+    <ba-card title="MQTT End point" baCardClass="with-scroll">
+      <div class="col-md-6">
+        <div class="form-group">
+          <label>Installation ID :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttInstallationID}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Host :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttHost}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>Topic :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttTopic}}" disabled>
+        </div>
+
+      </div>
+
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>SSL Port :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttPortSSL}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>TCP Port :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttPortTCP}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>WS Port :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttPortWS}}" disabled>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="form-group">
+          <label>WSS Port :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttPortWSS}}" disabled>
+        </div>
+        <div class="form-group">
+          <label>TTL :</label>
+          <input type="text" class="form-control form-control-rounded" placeholder="{{mqttTtl}}" disabled>
+        </div>
+      </div>
+    </ba-card>
   </div>
 </div>
 
-
+<!--<div class="row">
+  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
+    <pie-chart></pie-chart>
+  </div>
+</div>-->

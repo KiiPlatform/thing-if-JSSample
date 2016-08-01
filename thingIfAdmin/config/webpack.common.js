@@ -89,7 +89,8 @@ module.exports = {
           // these packages have problems with their sourcemaps
           helpers.root('node_modules/rxjs'),
           helpers.root('node_modules/ng2-bootstrap'),
-          helpers.root('node_modules/ng2-branchy')
+          helpers.root('node_modules/ng2-branchy'),
+          helpers.root('node_modules/thing-if-sdk')
         ]
       }
 

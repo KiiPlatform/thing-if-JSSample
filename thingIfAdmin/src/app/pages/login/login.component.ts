@@ -1,9 +1,13 @@
+/// <reference path="../../../../typings/modules/thing-if-sdk/index.d.ts" />
 import {Component, ViewEncapsulation} from '@angular/core';
 import {FormGroup, AbstractControl, FormBuilder, Validators} from '@angular/forms';
 import {kii} from '../../config';
 import {CORE_DIRECTIVES} from '@angular/common';
 import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
 import {Router} from '@angular/router';
+import * as ThingIFSDK from 'thing-if-sdk';
+import {OnboardingResult} from 'thing-if-sdk'
+import {AppManager} from '../../app.manager';
 
 
 @Component({
@@ -47,9 +51,30 @@ export class Login {
 
       // Authenticate the user
       kii.KiiUser.authenticate(username, password).then(
-        function(theUser) {
+        function(authedUser) {
+          var token = authedUser.getAccessToken();
+          var ownerId = authedUser.getID();
+          
+          var apiAuthor = new ThingIFSDK.APIAuthor(
+              token,
+              new ThingIFSDK.App(
+                  kii.Kii.getAppID(),
+                  kii.Kii.getAppKey(),
+                  "https://api.kii.com")
+          );
+          let type = ThingIFSDK.TypedID.fromString("USER:" + ownerId);
+          let onboardRequest = new ThingIFSDK.OnboardWithVendorThingIDRequest("vendorthing-id", "password", type);
+          return apiAuthor.onboardWithVendorThingID(onboardRequest);
+          
+        }
+      ).then(
+        function (res:OnboardingResult) {
+          console.log("onboarded:"+JSON.stringify(res));
           console.log("success");
+          let manager = new AppManager();
+          manager.onboardingResult = res;
           window.location.href = '#/pages/dashboard';
+          
         }
       ).catch(
         function(error) {
