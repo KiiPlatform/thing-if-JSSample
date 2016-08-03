@@ -1,7 +1,5 @@
 /// <reference path="../../../../typings/modules/thing-if-sdk/index.d.ts" />
 import {Component, ViewEncapsulation} from '@angular/core';
-
-import {PieChart} from './pieChart';
 import {BaCard} from '../../theme/components';
 import {AppManager} from '../../app.manager';
 import {OnboardingResult, MqttEndpoint} from 'thing-if-sdk';
@@ -9,7 +7,7 @@ import {OnboardingResult, MqttEndpoint} from 'thing-if-sdk';
 @Component({
   selector: 'dashboard',
   pipes: [],
-  directives: [PieChart, BaCard],
+  directives: [BaCard],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./dashboard.scss')],
   template: require('./dashboard.html')

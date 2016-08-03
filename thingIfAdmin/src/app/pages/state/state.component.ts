@@ -1,11 +1,15 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {BaThemeConfigProvider} from '../../theme';
-
+import {PieChart} from './pieChart';
 import {StateService} from './state.service';
+import {BaCard} from '../../theme/components';
+import {AppManager} from '../../app.manager';
+import {OnboardingResult, MqttEndpoint} from 'thing-if-sdk';
 
 @Component({
   selector: 'state',
   encapsulation: ViewEncapsulation.None,
+  directives: [PieChart,BaCard],
   providers: [StateService],
   styles: [require('./state.scss')],
   template: require('./state.html')
