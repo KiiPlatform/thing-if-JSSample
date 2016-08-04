@@ -1,5 +1,5 @@
 {
-  "name": "ThingIF-admin",
+  "name": "thingif-admin",
   "version": "0.0.1",
   "description": "Angular 2 and Bootstrap 4 Admin Template.",
   "author": "akveo",
@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "Ionicons": "ionicons#~2.0.1"
+    "Ionicons": "ionicons#~2.0.1",
+    "chart.js": "npm:chart.js#^2.2.1"
   }
 }

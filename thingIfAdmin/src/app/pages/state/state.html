@@ -1,24 +1,33 @@
 <div class="row">
-  <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-xs-12">
-    <pie-chart></pie-chart>
-  </div>
-</div>
-<div class="task-state-container">
-  <input type="text" value="" class="form-control task-state" placeholder="Task to do.." (keyup)="addToDoItem($event)" [(ngModel)]="newTodoText"/>
-  <i (click)="addToDoItem($event)" class="add-item-icon ion-plus-round"></i>
-  <div class="box-shadow-border"></div>
+  <ba-card title="Smartlight States" baCardClass="with-scroll">
+    <div class="col-md-6">
+      <i class="chart-icon i-{{ power.icon }}"></i>
+      <div class="form-group">
+        <label>Power : {{power.stats}}</label>
+      </div>
+      <div class="col-md-3">
+      <i class="chart-icon i-tango-rgb"></i>
+      </div>
+      <div class="col-md-3">
+        <label>{{red.description}} :</label>
+        <input type="text" class="form-control form-control-rounded" placeholder="{{red.stats}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label>{{green.description}} :</label>
+        <input type="text" class="form-control form-control-rounded" placeholder="{{green.stats}}" disabled>
+      </div>
+      <div class="col-md-3">
+        <label>{{blue.description}} :</label>
+        <input type="text" class="form-control form-control-rounded" placeholder="{{blue.stats}}" disabled>
+      </div>
 
-  <ul class="state-list">
-    <li *ngFor="let item of getNotDeleted()" [ngClass]="{checked: item.isChecked, active: item.isActive}"
-        (mouseenter)="item.isActive=true" (mouseleave)="item.isActive=false">
+    </div>
+    <div class="col-md-6">
+      <base-chart class="chart" [data]="pieChartData" [labels]="pieChartLabels" [chartType]="pieChartType" [colors]="backgroundColor"
+        (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></base-chart>
+    </div>
+  </ba-card>
 
-      <div class="blur-container"><div class="blur-box"></div></div>
-      <i class="mark" [ngStyle]="{ 'background-color': item.color }"></i>
-      <label class="state-checkbox custom-checkbox custom-input-success">
-        <input type="checkbox" [(ngModel)]="item.isChecked">
-        <span class="cut-with-dots">{{ item.text }}</span>
-      </label>
-      <i class="remove-state ion-ios-close-empty" (click)="item.deleted = true"></i>
-    </li>
-  </ul>
+
+
 </div>
