@@ -47,6 +47,7 @@ export class State {
   onReload() {
     this._stateService.loadState().then((res: SmartLightState) => {
       this._ngZone.run(() => {
+        this.power.stats = res.power ? 'ON' :'OFF';
         this.pieChartData = res.rgb;
         this.red.stats = res.rgb[0];
         this.green.stats = res.rgb[1];
