@@ -7,7 +7,7 @@ import {Forms} from './forms/forms.component';
 import {Inputs} from './forms/components/inputs/inputs.component';
 import {Layouts} from './forms/components/layouts/layouts.component';
 import {Components} from './components/components.component';
-
+import {Command} from './command/command.component';
 //noinspection TypeScriptValidateTypes
 export const PagesRoutes:RouterConfig = [
   {
@@ -42,7 +42,7 @@ export const PagesRoutes:RouterConfig = [
       },
       {
         path: 'command',
-        component: State,
+        component: Command,
         data: {
           menu: {
             title: 'Commands',

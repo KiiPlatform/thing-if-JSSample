@@ -54,7 +54,10 @@ module.exports = {
 
     // Make sure root is src
     root: helpers.root('src'),
-
+    alias: {
+        'jquery-ui': 'jquery-ui/ui/widgets',
+        'jquery-ui-css': 'jquery-ui/../../themes/base'
+    },
     // remove other default values
     modulesDirectories: ['node_modules', 'bower_components']
 
