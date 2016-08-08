@@ -6,7 +6,7 @@
         <label>Power : {{power.stats}}</label>
       </div>
       <div class="col-md-3">
-      <i class="chart-icon i-tango-rgb"></i>
+        <i class="chart-icon i-tango-rgb"></i>
       </div>
       <div class="col-md-3">
         <label>{{red.description}} :</label>
@@ -27,7 +27,9 @@
         (chartHover)="chartHovered($event)" (chartClick)="chartClicked($event)"></base-chart>
     </div>
   </ba-card>
-
-
-
+  <div class="row">
+    <div class="col-sm-offset-9 col-sm-10">
+      <button (click)="onReload()" class="btn btn-default btn-auth">Refresh</button>
+    </div>
+  </div>
 </div>
