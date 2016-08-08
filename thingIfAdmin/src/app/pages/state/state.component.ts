@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {BaThemeConfigProvider} from '../../theme';
-import {PieChart} from './pieChart';
+
 import {StateService, SmartLightState} from './state.service';
 import {BaCard} from '../../theme/components';
 import {AppManager} from '../../app.manager';
