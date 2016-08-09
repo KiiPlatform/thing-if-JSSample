@@ -1,0 +1,42 @@
+<div class="horizontal-scroll">
+  <table class="table table-condensed">
+    <thead>
+    <tr>
+      <th class="table-id">#</th>
+      <th>Trigger ID</th>
+      <th>Trigger Type</th>
+      <th>Status</th>
+      <th>Enable/Disable</th>
+      
+      <th>Update</th>
+      <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let item of triggerData ; let i = index">
+      <td class="table-id">{{ i+1 }}</td>
+      <td>{{ item.triggerID }}</td>
+      <td>{{ item.triggerType == 1 ?'Command':'ServerCode' }}</td>
+      <td>
+        {{ item.rowStatus ? 'Enabled ':'Disabled' }}
+      </td>
+      <td>
+        <div class="col-md-2 voffset2">
+        <ui-switch [checked]="item.rowStatus" (change)="item.statusChange($event)" size="small" ></ui-switch>
+        
+        </div>
+        <div class="col-md-2">
+          <button class="btn btn-default btn-xs voffset1" [disabled]="item.canChangeStatus()">Update Status</button>
+        </div>
+      </td>
+
+      <td>
+        <button class="btn btn-default btn-xs voffset1" >Update</button>
+      </td>
+      <td>
+        <button class="btn btn-danger btn-with-icon btn-xs voffset1"><i class="ion-nuclear"></i>Delete</button>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>

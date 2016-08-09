@@ -1,52 +1,34 @@
 import {Component, ViewEncapsulation} from '@angular/core';
-import {BaThemeConfigProvider} from '../../theme';
-
+import {BaCard} from '../../theme/components';
 import {TriggerService} from './trigger.service';
+import {TriggerList,TriggerRow,TriggerType} from './triggerList'
+
 
 @Component({
   selector: 'trigger',
   encapsulation: ViewEncapsulation.None,
   providers: [TriggerService],
   styles: [require('./trigger.scss')],
-  template: require('./trigger.html')
+  template: require('./trigger.html'),
+  directives:[TriggerList,BaCard]
 })
 export class Trigger {
-  
-  public dashboardColors = this._baConfig.get().colors.dashboard;
+  triggerData:Array<TriggerRow> =[];
+  constructor(private _triggerService: TriggerService) {
+    let dummyRow = new TriggerRow('id',TriggerType.Command,true);
+    this.triggerData.push(dummyRow)
 
-  public triggerList:Array<any>;
-  public newStateText:string = '';
-
-  constructor(private _baConfig:BaThemeConfigProvider, private _triggerService:TriggerService) {
-    this.triggerList = this._triggerService.getStateList();
-
-    this.triggerList.forEach((item) => {
-      item.color = this._getRandomColor();
-    });
   }
 
-  getNotDeleted() {
-    return this.triggerList.filter((item:any) => {
-      return !item.deleted
-    })
+  updateStatus(event : TriggerRow){
+
+  }
+  updateTrigger(event : TriggerRow){
+    
+  }
+  updateDelete(event : TriggerRow){
+    
   }
 
-  addToDoItem($event) {
 
-    if (($event.which === 1 || $event.which === 13) && this.newStateText.trim() != '') {
-
-      this.triggerList.unshift({
-        text: this.newStateText,
-        color: this._getRandomColor(),
-      });
-      this.newStateText = '';
-    }
-  }
-
-  private _getRandomColor() {
-    let colors = Object.keys(this.dashboardColors).map(key => this.dashboardColors[key]);
-
-    var i = Math.floor(Math.random() * (colors.length - 1));
-    return colors[i];
-  }
 }
