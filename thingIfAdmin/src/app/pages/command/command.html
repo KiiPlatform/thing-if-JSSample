@@ -1,0 +1,76 @@
+<div class="row">
+    <div class="card-deck">
+
+        <div class="card">
+            <div class="card-block row  ">
+
+                <i class="col-md-3 chart-icon i-bulb"></i>
+                <div class="col-md-4 voffset4">
+                    <h3>{{power ? 'ON':'OFF'}}</h3>
+                </div>
+            </div>
+            
+            <div class="card-footer col-md-12">
+                <div class="col-md-5 voffset">
+                    <label>Power :</label>
+                </div>
+                <div class="col-md-4 ">
+                    <ui-switch [checked]="power" (change)="onSwitchChange($event)" size="small"></ui-switch>
+                </div>
+                
+            </div>
+
+        </div>
+        <div class="card">
+
+            <div class="card-block row">
+                <i class="col-md-1 chart-icon i-tango-rgb"></i>
+                <div class="col-md-5">
+                    <label>Red :</label>
+                    <input type="text" class="form-control form-control-rounded" placeholder="{{rgb.red}}" disabled>
+                </div>
+            </div>
+            <div class="card-footer col-md-12">
+                <slider [slideValue]="rgb.red" (valueChanged)="sliderUpdated($event)" sliderID="red"></slider>
+            </div>
+        </div>
+        <div class="card">
+
+            <div class="card-block row">
+                <i class="col-md-1 chart-icon i-tango-rgb"></i>
+                <div class="col-md-5">
+                    <label>Green :</label>
+                    <input type="text" class="form-control form-control-rounded" placeholder="{{rgb.green}}" disabled>
+                </div>
+
+            </div>
+            <div class="card-footer col-md-12">
+                <slider [slideValue]="rgb.green" (valueChanged)="sliderUpdated($event)" sliderID="green"></slider>
+            </div>
+        </div>
+        <div class="card">
+
+            <div class="card-block row">
+                <i class="col-md-1 chart-icon i-tango-rgb"></i>
+                <div class="col-md-5">
+                    <label>Blue :</label>
+                    <input type="text" class="form-control form-control-rounded" placeholder="{{rgb.blue}}" disabled>
+                </div>
+
+            </div>
+            <div class="card-footer col-md-12">
+                <slider [slideValue]="rgb.blue" (valueChanged)="sliderUpdated($event)" sliderID="blue"></slider>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row voffset2">
+    <div class="col-md-3 col-md-offset-10">
+        <button type="button" (click)="sendCommand()" class="btn btn-default btn-auth">SendCommand</button>
+    </div>
+</div>
+<div class="row voffset2">
+    <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
+        {{ alert?.msg }}
+    </alert>
+</div>

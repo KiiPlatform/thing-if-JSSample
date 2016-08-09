@@ -79,13 +79,7 @@ export class Login {
           manager.onboardingResult = res;
           window.location.href = '#/pages/dashboard';
           manager.updateState();
-          // const actions = [{ "turnPower": { "power": true } }];
-          // const commandReq: ThingIFSDK.PostCommandRequest = new ThingIFSDK.PostCommandRequest("smart-light", 1, actions);
-          // commandReq.issuer = "USER:" + ownerId;
-
-          // let author = manager.apiAuthor;
           
-          // return author.postNewCommand(manager.getTargetID(), commandReq);
         }
         ).catch(
         function (error) {
