@@ -3,7 +3,7 @@ import * as ThingIFSDK from 'thing-if-sdk';
 import {OnboardingResult, ThingIFAPI} from 'thing-if-sdk'
 import {AppManager} from '../../app.manager';
 import {kii} from '../../config';
-
+import {RGB} from '../../pages/smartlight'
 @Injectable()
 export class TriggerService {
 
@@ -22,15 +22,15 @@ export class TriggerService {
     }
   }
 
-  createCommandTrigger(): Promise<any> {
-    // TODO: implementation 
+  createCommandTrigger(conditionPower:boolean, rgb: RGB): Promise<any> {
+    const actions = [{ turnPower: { "power": !conditionPower } }, { changeColor: { "color": rgb.toArray() } }]; 
     let manager = new AppManager();
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
       let targetID = new ThingIFSDK.TypedID(ThingIFSDK.Types.Thing, "Thing ID for target");
-      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", "false"));
+      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
-      let request = new ThingIFSDK.CommandTriggerRequest("Schema name", 1, [{ turnPower: { power: true } }], statePredicate);
+      let request = new ThingIFSDK.CommandTriggerRequest("Smart Light", 1, [actions], statePredicate);
       return author.postCommandTrigger(targetID, request)
     } else {
       return new Promise<any>((resolve) => {

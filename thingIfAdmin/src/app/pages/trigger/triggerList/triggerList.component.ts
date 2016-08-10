@@ -3,7 +3,7 @@ import { UiSwitchComponent } from 'angular2-ui-switch';
 
 export enum TriggerType {
     Command = 1,
-    ServerCode
+    ServerCode = 2
 }
 
 export class TriggerRow {
@@ -33,16 +33,16 @@ export class TriggerRow {
     template: require('./triggerList.html'),
     styles: [`
     .voffset  { margin-top: 2px; }
-.voffset1 { margin-top: 5px; }
-.voffset2 { margin-top: 10px; }
-.voffset3 { margin-top: 15px; }
-.voffset4 { margin-top: 30px; }
-.voffset5 { margin-top: 40px; }
-.voffset6 { margin-top: 60px; }
-.voffset7 { margin-top: 80px; }
-.voffset8 { margin-top: 100px; }
-.voffset9 { margin-top: 150px; }
-`
+    .voffset1 { margin-top: 5px; }
+    .voffset2 { margin-top: 10px; }
+    .voffset3 { margin-top: 15px; }
+    .voffset4 { margin-top: 30px; }
+    .voffset5 { margin-top: 40px; }
+    .voffset6 { margin-top: 60px; }
+    .voffset7 { margin-top: 80px; }
+    .voffset8 { margin-top: 100px; }
+    .voffset9 { margin-top: 150px; }
+    `
     ],
     directives: [UiSwitchComponent]
 })
@@ -54,4 +54,14 @@ export class TriggerList {
     constructor() {
 
     }
+    statusChanged(item:TriggerRow){
+        this.changeTriggerStatus.emit(item);
+    }
+    updateClicked(item:TriggerRow){
+        this.updateTrigger.emit(item);
+    }
+    deleteClicked(item:TriggerRow){
+        this.deleteTrigger.emit(item);
+    }
+    //(click)="updateClicked(item)"
 }
