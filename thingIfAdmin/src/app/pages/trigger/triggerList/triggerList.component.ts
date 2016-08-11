@@ -1,6 +1,7 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import { UiSwitchComponent } from 'angular2-ui-switch';
 import {RGB} from '../../../pages/smartlight'
+import {Trigger,Command,ServerCode,Predicate,StatePredicate,Condition,Equals} from 'thing-if-sdk'
 export enum TriggerType {
     Command = 1,
     ServerCode = 2
@@ -9,16 +10,29 @@ export enum TriggerType {
 export class TriggerRow {
     rgb : RGB = new RGB()
     power : boolean = false
+    conditionPower = false
     triggerID: string
     triggerType: TriggerType = TriggerType.Command
     private enabledStatus = false
     rowStatus = false
-    constructor(id: string, type: TriggerType, status: boolean) {
-        this.triggerID = id;
-        this.triggerType = type;
-        this.enabledStatus = status
-        this.rowStatus = status
+    title : string = 'No Title'
+    constructor(trigger? : Trigger) {
+        if (trigger==null){
+            return
+        }
+        this.triggerID = trigger.triggerID;
+        this.triggerType = trigger.serverCode === null ? TriggerType.Command : TriggerType.ServerCode
+        this.enabledStatus = !trigger.disabled
+        this.rowStatus = !trigger.disabled
+        let condition : Condition = trigger.predicate.toJson()['condition']
+        let eq : Equals = condition.clause as Equals
+        //this.power = eq.value as boolean
+        if (trigger.title!= null){
+            this.title = trigger.title
+        } 
+
     }
+    
     statusChange(event) {
         this.rowStatus = event
     }

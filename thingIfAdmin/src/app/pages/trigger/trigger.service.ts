@@ -1,11 +1,46 @@
 import {Injectable} from '@angular/core';
 import * as ThingIFSDK from 'thing-if-sdk';
-import {OnboardingResult, ThingIFAPI} from 'thing-if-sdk'
+import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command} from 'thing-if-sdk'
 import {AppManager} from '../../app.manager';
 import {kii} from '../../config';
 import {RGB} from '../../pages/smartlight'
+import {TriggerRow, TriggerType} from './triggerList'
+
+export interface SimpleServerCode {
+  functionName: string
+  param: Object
+}
+
+export const ALARM: SimpleServerCode = { functionName: 'setAlarm', param: { power: true } }
+export const NOTIFY: SimpleServerCode = { functionName: 'sendNotification', param: { message: 'There is an intruder !!' } }
+
+
 @Injectable()
 export class TriggerService {
+  deleteTrigger(triggerID: string): Promise<any> {
+    let manager = new AppManager();
+    if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
+      let author = manager.apiAuthor;
+      let targetID = manager.getTargetID()
+      return author.deleteTrigger(targetID, triggerID)
+    } else {
+      return new Promise<any>((resolve) => {
+        resolve('deleted')
+      })
+    }
+  }
+  enableTrigger(triggerID: string, enabled: boolean): Promise<any> {
+    let manager = new AppManager();
+    if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
+      let author = manager.apiAuthor;
+      let targetID = manager.getTargetID()
+      return author.enableTrigger(targetID, triggerID, enabled)
+    } else {
+      return new Promise<any>((resolve) => {
+        resolve('enabled');
+      })
+    }
+  }
 
   listTriggers(): Promise<any> {
     let manager = new AppManager();
@@ -13,77 +48,101 @@ export class TriggerService {
 
       let author = manager.apiAuthor;
 
-      let targetID = new ThingIFSDK.TypedID(ThingIFSDK.Types.Thing, "Thing ID for target");
+      let targetID = manager.getTargetID()
       return author.listTriggers(targetID)
     } else {
       return new Promise<any>((resolve) => {
-        resolve('dummy');
+        let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", true));
+        let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
+        let issuer = ThingIFSDK.TypedID.fromString("USER:myself");
+        let target = ThingIFSDK.TypedID.fromString("THING:myself");
+        const actions = [{ turnPower: { "power": true } }, { changeColor: { "color": [100, 255, 125] } }];
+        let command = new Command(target, issuer, "smart-light", 1, actions)
+        let serverCodeAlarm = new ThingIFSDK.ServerCode(ALARM.functionName, null, null, ALARM.param);
+        let serverCodeNotify = new ThingIFSDK.ServerCode(NOTIFY.functionName, null, null, NOTIFY.param);
+        let triggers: Array<Trigger> = [
+          Trigger.fromJson({
+            predicate: statePredicate.toJson(),
+            title: 'Trigger 1',
+            triggerID: 'command-trigger-1',
+            disabled: false,
+            command: command
+          }),
+          Trigger.fromJson({
+            predicate: statePredicate.toJson(),
+            title: 'Trigger 2',
+            triggerID: 'server-trigger-1',
+            disabled: false,
+            serverCode: serverCodeAlarm
+          }),
+          Trigger.fromJson({
+            predicate: statePredicate.toJson(),
+            title: 'Trigger 3',
+            triggerID: 'server-trigger-2',
+            disabled: false,
+            serverCode: serverCodeNotify
+          })
+        ]
+        let res = new QueryResult<Trigger>(triggers)
+        resolve(res);
       })
     }
   }
 
-  createCommandTrigger(conditionPower:boolean, rgb: RGB): Promise<any> {
-    const actions = [{ turnPower: { "power": !conditionPower } }, { changeColor: { "color": rgb.toArray() } }]; 
+  saveCommandTrigger(conditionPower: boolean, rgb: RGB, power: boolean, triggerID?: string): Promise<any> {
+    const actions = [{ turnPower: { "power": !conditionPower } }, { changeColor: { "color": rgb.toArray() } }];
     let manager = new AppManager();
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
-      let targetID = new ThingIFSDK.TypedID(ThingIFSDK.Types.Thing, "Thing ID for target");
+      let targetID = manager.getTargetID()
       let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
-      let request = new ThingIFSDK.CommandTriggerRequest("Smart Light", 1, [actions], statePredicate);
-      return author.postCommandTrigger(targetID, request)
+      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate);
+      if (triggerID) {
+        return author.patchCommandTrigger(targetID, triggerID, request)
+      } else {
+        return author.postCommandTrigger(targetID, request)
+      }
+
     } else {
+
       return new Promise<any>((resolve) => {
-        resolve('dummy');
+        if (triggerID) {
+          resolve('new command trigger');
+        } else {
+          resolve('update command');
+        }
       })
     }
   }
 
-  createServerCodeTrigger(): Promise<any> {
+  saveServerCodeTrigger(conditionPower: boolean, sc: SimpleServerCode, triggerID?: string): Promise<any> {
     let manager = new AppManager();
+
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
-      let targetID = new ThingIFSDK.TypedID(ThingIFSDK.Types.Thing, "Thing ID for target");
-      let serverCode = new ThingIFSDK.ServerCode("function_name", null, null, { param1: "hoge" });
-      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", "false"));
+      let targetID = manager.getTargetID()
+      let serverCode = new ThingIFSDK.ServerCode(sc.functionName, null, null, sc.param);
+      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
       let request = new ThingIFSDK.ServerCodeTriggerRequest(serverCode, statePredicate);
-      return author.postServerCodeTrigger(targetID, request)
+      if (triggerID) {
+        return author.patchServerCodeTrigger(targetID, triggerID, request)
+      } else {
+        return author.postServerCodeTrigger(targetID, request)
+      }
+
     } else {
       return new Promise<any>((resolve) => {
-        resolve('dummy');
+        if (triggerID) {
+          resolve('new server trigger');
+        } else {
+          resolve('update server');
+        }
       })
     }
   }
 
-  updateCommandTrigger(): Promise<any> {
-    let manager = new AppManager();
-    if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
-      let author = manager.apiAuthor;
-      let targetID = new ThingIFSDK.TypedID(ThingIFSDK.Types.Thing, "Thing ID for target");
-      let request = new ThingIFSDK.CommandTriggerRequest("led2", 2, [{ setBrightness: { brightness: 50 } }]);
-      author.patchCommandTrigger(targetID, "Trigger ID", request).then(function (trigger) {
-        // Do something
-      })
-    } else {
-      return new Promise<any>((resolve) => {
-        resolve('dummy');
-      })
-    }
-  }
-  updateServercodeTrigger(): Promise<any> {
-    let manager = new AppManager();
-    if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
-      let author = manager.apiAuthor;
-      let targetID = new ThingIFSDK.TypedID(ThingIFSDK.Types.Thing, "Thing ID for target");
-      let serverCode = new ThingIFSDK.ServerCode("function_name", null, null, { param1: "hoge" });
-      let request = new ThingIFSDK.ServerCodeTriggerRequest(serverCode, ThingIFSDK.ScheduleOncePredicate.fromJson({}));
-      return author.patchServerCodeTrigger(targetID, "Trigger ID", request)
-    } else {
-      return new Promise<any>((resolve) => {
-        resolve('dummy');
-      })
-    }
-  }
+
 
 }

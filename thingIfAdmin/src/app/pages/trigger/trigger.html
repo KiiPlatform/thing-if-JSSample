@@ -1,12 +1,11 @@
 <div class="row">
-  <div class="col-md-3">
-    <button type="button" class="btn btn-default btn-with-icon"><i class="ion-android-open"></i>New Command Trigger
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-success btn-with-icon" (click)="newTrigger(false)"><i class="ion-android-open"></i>New Command Trigger
+    </button>
+    <button type="button" class="btn btn-primary btn-with-icon" (click)="newTrigger(true)"><i class="ion-android-checkmark-circle"></i>New Server Code Trigger
     </button>
   </div>
-  <div class="col-md-3">
-    <button type="button" class="btn btn-primary btn-with-icon"><i class="ion-android-checkmark-circle"></i>New Server Code Trigger
-    </button>
-  </div>
+
 </div>
 <div class="row voffset2">
   <ba-card title="Trigger List" baCardClass="with-scroll">
@@ -14,30 +13,56 @@
       (deleteTrigger)="deleteTrigger($event)"></trigger-list>
   </ba-card>
 </div>
+<div class="row voffset2">
+  <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
+    {{ alert?.msg }}
+  </alert>
+</div>
 <!-- Small modal -->
-<div bsModal #smModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" aria-label="Close" (click)="smModal.hide()">
+        <button type="button" class="close" aria-label="Close" (click)="deleteModal.hide()">
         
           <span aria-hidden="true">&times;</span>
         </button>
 
-        <h2 class="modal-title ">Small modal</h2>
+        <h2 class="modal-title ">{{actionLabel}}</h2>
       </div>
       <div class="modal-body ">
-        HHHH
+        <h4>Are you sure want to delete : {{currentAction.row.triggerID}} </h4>
       </div>
       <div class="modal-footer ">
-        <button type="button" class="btn btn-primary" (click)="smModal.hide()">Proceed</button>
+        <button type="button" class="btn btn-danger" (click)="proceed()">Proceed</button>
       </div>
     </div>
+  </div>
+</div>
+<div bsModal #enabledModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="enabledModal.hide()">
+        
+          <span aria-hidden="true">&times;</span>
+        </button>
 
+        <h2 class="modal-title ">{{actionLabel}}</h2>
+      </div>
+      <div class="modal-body ">
+        <h4>Are you sure want to {{currentAction.row.rowStatus ? 'enable' : 'disable'}} : {{currentAction.row.triggerID}} </h4>
+      </div>
+      <div class="modal-footer ">
+        <button type="button" class="btn btn-warning" (click)="proceed()">Proceed</button>
+      </div>
+    </div>
   </div>
 </div>
 <!-- Large modal -->
-<div bsModal #commandTriggerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div bsModal #commandTriggerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
@@ -49,7 +74,7 @@
       </div>
       <div class="modal-body">
         <div class="row">
-        <h3> Condition :</h3>
+          <h3> Condition :</h3>
         </div>
         <div class="row">
           <div class="col-md-4 col-center-block">
@@ -57,20 +82,21 @@
             <p class="voffset2"> Triggered when : VALUE CHANGED</p>
           </div>
         </div>
-         <div class="row voffset2">
-            <h3> Command :</h3>
-          </div>
-          <smartlight  [rgb]="rgb" [power]="!conditionPower" [powerDisabled]="true"></smartlight>
+        <div class="row voffset2">
+          <h3> Command :</h3>
+        </div>
+        <smartlight [rgb]="rgb" [power]="!conditionPower" [powerDisabled]="true"></smartlight>
       </div>
       <div class="modal-footer ">
-        <button type="button" class="btn btn-primary" (click)="commandTriggerModal.hide()">{{actionLabelButton}}</button>
+        <button type="button" class="btn btn-primary" (click)="proceed()">{{actionLabelButton}}</button>
       </div>
     </div>
   </div>
 </div>
 <!-- Large modal -->
 
-<div bsModal #serverTriggerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<div bsModal #serverTriggerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
@@ -81,14 +107,34 @@
         <h2 class="modal-title">{{actionLabel}} Trigger</h2>
       </div>
       <div class="modal-body">
-        
-         <div class="row voffset2">
-            <h3> Command :</h3>
+
+        <div class="row">
+          <div class="col-md-4 col-center-block">
+            <p class="voffset2"> Condition : </p>
+            <smartlight [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changePowerStatus($event)"></smartlight>
+            <p class="voffset2"> Triggered when : VALUE CHANGED</p>
+            
           </div>
-          <smartlight  [rgb]="rgb" [power]="!conditionPower" ></smartlight>
+        </div>
+        <div class="row col-center-block">
+          <p class="voffset2"> Execute  : </p>
+          <div class="col-md-3 col-md-offset-2">
+            <label class="radio-inline custom-radio nowrap">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked="">
+            <span>Send Push notification</span>
+            </label>
+          </div>
+          <div class="col-md-3 col-md-offset-3">
+            <label class="radio-inline custom-radio nowrap">
+            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+            <span>Set Alarm</span>
+            </label>
+          </div>
+         
+        </div>
       </div>
       <div class="modal-footer ">
-        <button type="button" class="btn btn-primary" (click)="serverTriggerModal.hide()">Proceed</button>
+        <button type="button" class="btn btn-primary" (click)="proceed()">Proceed</button>
       </div>
     </div>
   </div>

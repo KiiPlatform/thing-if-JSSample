@@ -1,86 +1,187 @@
-import {Component, ViewEncapsulation,ViewChild} from '@angular/core';
+import {Component, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
 import {BaCard} from '../../theme/components';
-import {TriggerService} from './trigger.service';
-import {TriggerList,TriggerRow,TriggerType} from './triggerList'
-import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS,ModalDirective} from 'ng2-bootstrap/ng2-bootstrap';
-import {RGB,Smartlight} from '../../pages/smartlight'
-
+import {TriggerService, SimpleServerCode, ALARM, NOTIFY} from './trigger.service';
+import {TriggerList, TriggerRow, TriggerType} from './triggerList'
+import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from 'ng2-bootstrap/ng2-bootstrap';
+import {RGB, Smartlight} from '../../pages/smartlight'
+import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
+import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command} from 'thing-if-sdk'
 class TriggerAction {
-  type : string
-  row : TriggerRow
+  type: string
+  row: TriggerRow = new TriggerRow()
 }
 
 @Component({
   selector: 'trigger',
   encapsulation: ViewEncapsulation.None,
-  providers: [BS_VIEW_PROVIDERS,TriggerService],
+  providers: [BS_VIEW_PROVIDERS, TriggerService],
   styles: [require('./trigger.scss')],
   template: require('./trigger.html'),
-  directives:[MODAL_DIRECTIVES,TriggerList,BaCard,Smartlight]
+  directives: [MODAL_DIRECTIVES, TriggerList, BaCard, Smartlight, AlertComponent]
 })
-export class Trigger {
+export class TriggerComponent {
   conditionPower = false
-  actionLabel : string
-  actionLabelButton : string
+  selectedServercode: SimpleServerCode = ALARM
+  actionLabel: string
+  actionLabelButton: string
   @ViewChild('commandTriggerModal') public commandModal: ModalDirective;
   @ViewChild('serverTriggerModal') public serverModal: ModalDirective;
+  @ViewChild('deleteModal') public deleteModal: ModalDirective;
+  @ViewChild('enabledModal') public enabledModal: ModalDirective;
   public alerts: Array<Object> = [
   ];
-
+  power = true
   rgb = new RGB()
 
-  currentAction : TriggerAction = new TriggerAction()
-  triggerData:Array<TriggerRow> =[];
-  constructor(private _triggerService: TriggerService) {
-    let dummyRow = new TriggerRow('id-command',TriggerType.Command,true);
-    dummyRow.rgb.blue = 100
-    dummyRow.rgb.red = 5
-    dummyRow.rgb.green = 15
+  currentAction: TriggerAction = new TriggerAction()
+  triggerData: Array<TriggerRow> = [];
+  constructor(private _triggerService: TriggerService, private _zone: NgZone) {
+    _triggerService.listTriggers().then((result: QueryResult<Trigger>) => {
+      console.log(result);
+      this.triggerData = result.results.map<TriggerRow>((value) => {
+        return new TriggerRow(value)
+      })
+      console.log(result.results);
 
-    let dummyServerRow = new TriggerRow('id-server',TriggerType.ServerCode,false);
-    this.triggerData.push(dummyRow)
-    this.triggerData.push(dummyServerRow)
+    }).catch(error => {
+      console.log('error' + error);
+
+    })
 
   }
-
-  changePowerStatus(event : boolean){
+  public closeAlert(i: number): void {
+    this.alerts.splice(i, 1);
+  }
+  changePowerStatus(event: boolean) {
     this.conditionPower = event
   }
 
-  changeTriggerStatus(event : TriggerRow){
+  changeTriggerStatus(event: TriggerRow) {
     console.log(event.rowStatus);
     this.currentAction.type = 'changeStatus'
     this.currentAction.row = event
+    this.actionLabel = "Change Trigger Status"
+    this.enabledModal.show()
   }
-  updateTrigger(event : TriggerRow){
-    console.log('update '+event.triggerType);
+  updateTrigger(event: TriggerRow) {
+    console.log('update ' + event.triggerType);
 
     this.currentAction.type = 'update'
     this.currentAction.row = event
-    let isServerTrigger : boolean = event.triggerType === 2
-    console.log('isServerTrigger '+ isServerTrigger);
+    let isServerTrigger: boolean = event.triggerType === 2
+    console.log('isServerTrigger ' + isServerTrigger);
 
     this.rgb = event.rgb
-    this.conditionPower = event.power
-    console.log('isServerTrigger '+ this.actionLabel);
+    this.conditionPower = event.conditionPower
+    console.log('isServerTrigger ' + this.actionLabel);
     this.actionLabelButton = 'Update'
-    if (isServerTrigger){
+    if (isServerTrigger) {
       this.actionLabel = "Update Server"
       this.serverModal.show()
-    }else{
+    } else {
+      this.power = event.power
       this.actionLabel = "Update Command"
       this.commandModal.show()
     }
 
   }
-  deleteTrigger(event : TriggerRow){
-    console.log('delete '+event.triggerID);
+  deleteTrigger(event: TriggerRow) {
+    console.log('delete ' + event.triggerID);
     this.currentAction.type = 'delete'
     this.currentAction.row = event
+    this.actionLabel = "Change Trigger Status"
+    this.deleteModal.show()
   }
 
-  newTrigger(){
+  newTrigger(isServer: boolean) {
+    let type = isServer ? TriggerType.ServerCode : TriggerType.Command
+    let newRow = new TriggerRow();
+    newRow.triggerType = type
+    this.currentAction.type = 'new'
+    this.currentAction.row = newRow
+    this.actionLabelButton = 'Create Trigger'
+    if (isServer) {
+      this.actionLabel = "New Server"
+      this.serverModal.show()
+    } else {
+      this.actionLabel = "New Command"
+      this.commandModal.show()
+    }
+  }
 
+  proceed() {
+    let promise: Promise<any>
+    let row = this.currentAction.row
+    let isServer = row.triggerType === TriggerType.ServerCode
+    let service = this._triggerService
+    let successMessage: string
+
+    switch (this.currentAction.type) {
+      case 'new':
+        promise = isServer ?
+          service.saveServerCodeTrigger(this.conditionPower, this.selectedServercode) :
+          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power)
+
+        if (isServer) {
+          this.serverModal.hide()
+          successMessage = 'new Server Code Trigger is succeded'
+        } else {
+          this.commandModal.hide()
+          successMessage = 'new Command Trigger is succeded'
+        }
+        break;
+      case 'update':
+        promise = isServer ?
+          service.saveServerCodeTrigger(this.conditionPower, this.selectedServercode, row.triggerID) :
+          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID)
+        if (isServer) {
+          this.serverModal.hide()
+          successMessage = 'Server Code Trigger is updated'
+        } else {
+          this.commandModal.hide()
+          successMessage = 'Command Trigger is updated'
+        }
+        break;
+      case 'changeStatus':
+        promise = service.enableTrigger(row.triggerID, row.rowStatus)
+        this.enabledModal.hide()
+        successMessage = 'Trigger is ' + row.rowStatus ? 'Enabled' : 'Disabled'
+        break;
+      case 'delete':
+        promise = service.deleteTrigger(row.triggerID)
+        successMessage = 'Trigger is deleted'
+        this.deleteModal.hide()
+        break;
+      default:
+        alert('error')
+        break;
+
+    }
+
+    promise.then((result) => {
+      console.log(result);
+      
+      return service.listTriggers()
+    }).then((result: QueryResult<Trigger>) => {
+      console.log(result);
+      this._zone.run(() => {
+        this.triggerData = result.results.map<TriggerRow>((value) => {
+          return new TriggerRow(value)
+        })
+
+      })
+      this.showAlert(successMessage, false)
+      console.log(result.results);
+
+    }).catch((error) => {
+      this.showAlert(error, true)
+    })
+  }
+
+  showAlert(message: any, isError: boolean) {
+    this._zone.run(() => {
+      this.alerts.push({ msg: isError ? "error :" : "" + message, type: isError ? 'danger' : 'success', closable: true, dismissOnTimeout: 10 });
+    })
   }
 
 }
