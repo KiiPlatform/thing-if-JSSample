@@ -65,19 +65,6 @@ export const PagesRoutes:RouterConfig = [
             order: 0
           }
         }
-      },
-      {
-        path: 'notification',
-        component: State,
-        data: {
-          menu: {
-            title: 'Notifications',
-            icon: 'ion-ios-bell',
-            selected: false,
-            expanded: false,
-            order: 0
-          }
-        }
       }
   
     ]
