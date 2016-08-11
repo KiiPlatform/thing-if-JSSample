@@ -1,12 +1,14 @@
 import {Component, Input, Output, EventEmitter} from '@angular/core';
 import { UiSwitchComponent } from 'angular2-ui-switch';
-
+import {RGB} from '../../../pages/smartlight'
 export enum TriggerType {
     Command = 1,
     ServerCode = 2
 }
 
 export class TriggerRow {
+    rgb : RGB = new RGB()
+    power : boolean = false
     triggerID: string
     triggerType: TriggerType = TriggerType.Command
     private enabledStatus = false

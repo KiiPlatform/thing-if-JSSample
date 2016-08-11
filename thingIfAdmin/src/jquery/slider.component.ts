@@ -25,6 +25,7 @@ export class Slider implements AfterViewInit {
     @Input() slideValue: number = 0;
     @Input() sliderID : string = 'id';
     @Output() valueChanged = new EventEmitter()
+    private first = true
 
 
     constructor(@Inject(ElementRef) elementRef: ElementRef, public cdr: ChangeDetectorRef) {
@@ -44,5 +45,12 @@ export class Slider implements AfterViewInit {
           this.valueChanged.emit(change)
         }
       });
+    }
+    ngAfterContentChecked() {
+      if (this.slideValue > 0 && this.first){
+        jQuery(this.elementRef.nativeElement).find("#slider").slider({value:this.slideValue});
+        this.first = false
+      }
+      
     }
 }

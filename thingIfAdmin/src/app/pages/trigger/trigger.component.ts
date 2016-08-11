@@ -33,6 +33,10 @@ export class Trigger {
   triggerData:Array<TriggerRow> =[];
   constructor(private _triggerService: TriggerService) {
     let dummyRow = new TriggerRow('id-command',TriggerType.Command,true);
+    dummyRow.rgb.blue = 100
+    dummyRow.rgb.red = 5
+    dummyRow.rgb.green = 15
+
     let dummyServerRow = new TriggerRow('id-server',TriggerType.ServerCode,false);
     this.triggerData.push(dummyRow)
     this.triggerData.push(dummyServerRow)
@@ -56,7 +60,8 @@ export class Trigger {
     let isServerTrigger : boolean = event.triggerType === 2
     console.log('isServerTrigger '+ isServerTrigger);
 
-    
+    this.rgb = event.rgb
+    this.conditionPower = event.power
     console.log('isServerTrigger '+ this.actionLabel);
     this.actionLabelButton = 'Update'
     if (isServerTrigger){
