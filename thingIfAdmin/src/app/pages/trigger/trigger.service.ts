@@ -7,12 +7,12 @@ import {RGB} from '../../pages/smartlight'
 import {TriggerRow, TriggerType} from './triggerList'
 
 export interface SimpleServerCode {
-  functionName: string
-  param: Object
+  endpoint: string
+  parameters: Object
 }
 
-export const ALARM: SimpleServerCode = { functionName: 'setAlarm', param: { power: true } }
-export const NOTIFY: SimpleServerCode = { functionName: 'sendNotification', param: { message: 'There is an intruder !!' } }
+export const ALARM: SimpleServerCode = { endpoint: 'setAlarm', parameters: { power: true } }
+export const NOTIFY: SimpleServerCode = { endpoint: 'sendNotification', parameters: { message: 'There is an intruder !!' } }
 
 
 @Injectable()
@@ -57,17 +57,30 @@ export class TriggerService {
         let issuer = ThingIFSDK.TypedID.fromString("USER:myself");
         let target = ThingIFSDK.TypedID.fromString("THING:myself");
         const actions = [{ turnPower: { "power": true } }, { changeColor: { "color": [100, 255, 125] } }];
+        const actions2 = [{ turnPower: { "power": true } }, { changeColor: { "color": [255, 0, 125] } }];
         let command = new Command(target, issuer, "smart-light", 1, actions)
-        let serverCodeAlarm = new ThingIFSDK.ServerCode(ALARM.functionName, null, null, ALARM.param);
-        let serverCodeNotify = new ThingIFSDK.ServerCode(NOTIFY.functionName, null, null, NOTIFY.param);
-        let triggers: Array<Trigger> = [
-          Trigger.fromJson({
+        let command2 = new Command(target, issuer, "smart-light", 1, actions2)
+        let serverCodeAlarm = new ThingIFSDK.ServerCode(ALARM.endpoint, null, null, ALARM.parameters);
+        let serverCodeNotify = new ThingIFSDK.ServerCode(NOTIFY.endpoint, null, null, NOTIFY.parameters);
+        let tr1 =Trigger.fromJson({
             predicate: statePredicate.toJson(),
             title: 'Trigger 1',
             triggerID: 'command-trigger-1',
-            disabled: false,
-            command: command
-          }),
+            disabled: false
+          })
+          tr1.command = command
+        let tr2 =Trigger.fromJson({
+            predicate: statePredicate.toJson(),
+            title: 'Trigger 2',
+            triggerID: 'command-trigger-2',
+            disabled: false
+          })  
+
+          tr2.command = command2
+
+        let triggers: Array<Trigger> = [
+          tr1,
+          tr2,
           Trigger.fromJson({
             predicate: statePredicate.toJson(),
             title: 'Trigger 2',
@@ -90,14 +103,14 @@ export class TriggerService {
   }
 
   saveCommandTrigger(conditionPower: boolean, rgb: RGB, power: boolean, triggerID?: string): Promise<any> {
-    const actions = [{ turnPower: { "power": !conditionPower } }, { changeColor: { "color": rgb.toArray() } }];
+    const actions = [{ turnPower: { "power": power } }, { changeColor: { "color": rgb.toArray() } }];
     let manager = new AppManager();
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
       let targetID = manager.getTargetID()
       let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
-      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate);
+      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer);
       if (triggerID) {
         return author.patchCommandTrigger(targetID, triggerID, request)
       } else {
@@ -122,7 +135,7 @@ export class TriggerService {
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
       let targetID = manager.getTargetID()
-      let serverCode = new ThingIFSDK.ServerCode(sc.functionName, null, null, sc.param);
+      let serverCode = new ThingIFSDK.ServerCode(sc.endpoint, null, null, sc.parameters);
       let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
       let request = new ThingIFSDK.ServerCodeTriggerRequest(serverCode, statePredicate);

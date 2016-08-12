@@ -78,14 +78,14 @@
         </div>
         <div class="row">
           <div class="col-md-4 col-center-block">
-            <smartlight [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changePowerStatus($event)"></smartlight>
+            <smartlight [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changeConditionPowerStatus($event)"></smartlight>
             <p class="voffset2"> Triggered when : VALUE CHANGED</p>
           </div>
         </div>
         <div class="row voffset2">
           <h3> Command :</h3>
         </div>
-        <smartlight [rgb]="rgb" [power]="!conditionPower" [powerDisabled]="true"></smartlight>
+        <smartlight [rgb]="rgb" [power]="power" (changePowerStatus)="changePowerStatus($event)"></smartlight>
       </div>
       <div class="modal-footer ">
         <button type="button" class="btn btn-primary" (click)="proceed()">{{actionLabelButton}}</button>
@@ -111,7 +111,7 @@
         <div class="row">
           <div class="col-md-4 col-center-block">
             <p class="voffset2"> Condition : </p>
-            <smartlight [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changePowerStatus($event)"></smartlight>
+            <smartlight [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changeConditionPowerStatus($event)"></smartlight>
             <p class="voffset2"> Triggered when : VALUE CHANGED</p>
             
           </div>
@@ -120,13 +120,13 @@
           <p class="voffset2"> Execute  : </p>
           <div class="col-md-3 col-md-offset-2">
             <label class="radio-inline custom-radio nowrap">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio1" value="option1" checked="">
+            <input type="radio" name="endpoint" [(ngModel)]="endpoint" value="sendNotification">
             <span>Send Push notification</span>
             </label>
           </div>
           <div class="col-md-3 col-md-offset-3">
             <label class="radio-inline custom-radio nowrap">
-            <input type="radio" name="inlineRadioOptions" id="inlineRadio2" value="option2">
+            <input type="radio" name="endpoint" [(ngModel)]="endpoint" value="setAlarm">
             <span>Set Alarm</span>
             </label>
           </div>

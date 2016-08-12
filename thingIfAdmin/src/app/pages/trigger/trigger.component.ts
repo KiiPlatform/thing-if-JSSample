@@ -32,6 +32,7 @@ export class TriggerComponent {
   ];
   power = true
   rgb = new RGB()
+  endpoint = 'setAlarm'
 
   currentAction: TriggerAction = new TriggerAction()
   triggerData: Array<TriggerRow> = [];
@@ -48,11 +49,16 @@ export class TriggerComponent {
 
     })
 
+
+
   }
   public closeAlert(i: number): void {
     this.alerts.splice(i, 1);
   }
   changePowerStatus(event: boolean) {
+    this.power = event
+  }
+  changeConditionPowerStatus(event: boolean) {
     this.conditionPower = event
   }
 
@@ -64,21 +70,25 @@ export class TriggerComponent {
     this.enabledModal.show()
   }
   updateTrigger(event: TriggerRow) {
-    console.log('update ' + event.triggerType);
+
 
     this.currentAction.type = 'update'
     this.currentAction.row = event
     let isServerTrigger: boolean = event.triggerType === 2
-    console.log('isServerTrigger ' + isServerTrigger);
-
-    this.rgb = event.rgb
     this.conditionPower = event.conditionPower
-    console.log('isServerTrigger ' + this.actionLabel);
+    
+    
+
     this.actionLabelButton = 'Update'
     if (isServerTrigger) {
       this.actionLabel = "Update Server"
+      this.endpoint = event.endpoint
       this.serverModal.show()
     } else {
+      this.rgb = new RGB()
+      this.rgb.red = event.rgb.red
+      this.rgb.green = event.rgb.green
+      this.rgb.blue = event.rgb.blue
       this.power = event.power
       this.actionLabel = "Update Command"
       this.commandModal.show()
@@ -118,6 +128,7 @@ export class TriggerComponent {
 
     switch (this.currentAction.type) {
       case 'new':
+        this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, this.selectedServercode) :
           service.saveCommandTrigger(this.conditionPower, this.rgb, this.power)
@@ -131,6 +142,7 @@ export class TriggerComponent {
         }
         break;
       case 'update':
+        this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, this.selectedServercode, row.triggerID) :
           service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID)
@@ -160,7 +172,7 @@ export class TriggerComponent {
 
     promise.then((result) => {
       console.log(result);
-      
+
       return service.listTriggers()
     }).then((result: QueryResult<Trigger>) => {
       console.log(result);
