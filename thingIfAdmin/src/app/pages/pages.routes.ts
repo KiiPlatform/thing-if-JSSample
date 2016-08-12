@@ -1,7 +1,7 @@
 import {RouterConfig} from '@angular/router';
 import {Dashboard} from './dashboard/dashboard.component';
 import {State} from './state/state.component';
-import {Trigger} from './trigger/trigger.component';
+import {TriggerComponent} from './trigger/trigger.component';
 import {Pages} from './pages.component';
 import {Forms} from './forms/forms.component';
 import {Inputs} from './forms/components/inputs/inputs.component';
@@ -55,24 +55,11 @@ export const PagesRoutes:RouterConfig = [
       },
       {
         path: 'trigger',
-        component: Trigger,
+        component: TriggerComponent,
         data: {
           menu: {
             title: 'Triggers',
             icon: 'ion-ios-bolt',
-            selected: false,
-            expanded: false,
-            order: 0
-          }
-        }
-      },
-      {
-        path: 'notification',
-        component: State,
-        data: {
-          menu: {
-            title: 'Notifications',
-            icon: 'ion-ios-bell',
             selected: false,
             expanded: false,
             order: 0

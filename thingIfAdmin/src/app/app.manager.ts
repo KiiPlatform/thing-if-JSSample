@@ -7,6 +7,7 @@ export class AppManager {
     private static singleton: AppManager;
     public onboardingResult: OnboardingResult;
     public apiAuthor: APIAuthor;
+    public issuer :TypedID
     private _targetID: TypedID;
     public http : Http;
     constructor() {

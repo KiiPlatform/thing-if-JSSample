@@ -5,7 +5,7 @@ import {CORE_DIRECTIVES} from '@angular/common';
 import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
 import {Router} from '@angular/router';
 import * as ThingIFSDK from 'thing-if-sdk';
-import {OnboardingResult} from 'thing-if-sdk'
+import {OnboardingResult,TypedID,Types} from 'thing-if-sdk'
 import {AppManager} from '../../app.manager';
 import {Http, Headers} from '@angular/http';
 
@@ -68,6 +68,7 @@ export class Login {
           );
           manager.apiAuthor = apiAuthor;
           let type = ThingIFSDK.TypedID.fromString("USER:" + ownerId);
+          manager.issuer = type
           let onboardRequest = new ThingIFSDK.OnboardWithVendorThingIDRequest("vendorthing-id", "password", type);
           return manager.apiAuthor.onboardWithVendorThingID(onboardRequest);
         }

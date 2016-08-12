@@ -6,14 +6,14 @@ import {AppManager} from '../../app.manager';
 import {OnboardingResult, MqttEndpoint} from 'thing-if-sdk';
 import {Slider, SliderValueChange} from '../../../jquery/slider.component'
 import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
-import {CommandService,RGB} from './command.service';
+import {CommandService} from './command.service';
 import { UiSwitchComponent } from 'angular2-ui-switch';
-
+import {RGB,Smartlight} from '../../pages/smartlight'
 
 @Component({
   selector: 'command',
   pipes: [],
-  directives: [BaCard, Slider, AlertComponent,UiSwitchComponent],
+  directives: [BaCard, Slider, AlertComponent,UiSwitchComponent,Smartlight],
   encapsulation: ViewEncapsulation.None,
   styles: [require('./command.scss')],
   template: require('./command.html'),
@@ -27,9 +27,7 @@ export class Command {
 
   rgb = new RGB()
 
-  onSwitchChange(event){
-    this.power = event
-  }
+  
   constructor(private _zone: NgZone, private _service: CommandService) {
 
   }
@@ -56,22 +54,5 @@ export class Command {
     })
   }
 
-  sliderUpdated(event: SliderValueChange) {
-
-    switch (event.sliderID) {
-      case 'red':
-        this.rgb.red = event.value;
-        break;
-      case 'green':
-        this.rgb.green = event.value;
-        break;
-      case 'blue':
-        this.rgb.blue = event.value;
-        break;
-      default:
-        break;
-
-    }
-  }
 
 }

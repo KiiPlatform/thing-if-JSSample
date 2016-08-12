@@ -1,5 +1,5 @@
 import './app.loader.ts';
-import {Component, ViewEncapsulation} from "@angular/core";
+import {Component, ViewEncapsulation,ViewContainerRef} from "@angular/core";
 import {AppState} from "./app.state";
 import {BaThemeConfigProvider, BaThemeConfig} from "./theme";
 import {BaThemeRun} from "./theme/directives";
@@ -27,10 +27,10 @@ import {layoutPaths} from "./theme/theme.constants";
 export class App {
 
   isMenuCollapsed:boolean = false;
-
-  constructor(private _state:AppState, private _imageLoader:BaImageLoaderService, private _spinner:BaThemeSpinner, private _config:BaThemeConfig) {
+  viewContainerRef:ViewContainerRef
+  constructor(private _state:AppState, private _imageLoader:BaImageLoaderService, private _spinner:BaThemeSpinner, private _config:BaThemeConfig,viewContainerRef:ViewContainerRef) {
     this._loadImages();
-
+    this.viewContainerRef = viewContainerRef;
     this._state.subscribe('menu.isCollapsed', (isCollapsed) => {
       this.isMenuCollapsed = isCollapsed;
     });
