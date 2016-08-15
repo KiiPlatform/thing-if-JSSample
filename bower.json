@@ -1,9 +1,9 @@
 {
   "name": "thingif-admin",
-  "version": "0.0.1",
-  "description": "Angular 2 and Bootstrap 4 Admin Template.",
-  "author": "akveo",
-  "homepage": "http://akveo.github.io/ng2-admin/",
+  "version": "0.1.0",
+  "description": "Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.",
+  "author": "kii",
+  "homepage": "https://github.com/KiiPlatform/thing-if-JSSample",
   "license": "MIT",
   "moduleType": [
     "es6"

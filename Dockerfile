@@ -1,6 +1,6 @@
 FROM node:latest
 
-RUN git clone https://github.com/akveo/ng2-admin.git /var/www \
+RUN git clone https://github.com/KiiPlatform/thing-if-JSSample /var/www \
     && cd /var/www \
     && npm install --global rimraf \
     && npm run clean \
