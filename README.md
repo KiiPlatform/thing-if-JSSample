@@ -2,10 +2,14 @@
 
 Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
 
-### Based on
+## Based on
 
 - Awesome Admin panel framework based on Angular 2, Bootstrap 4 and Webpack ([NG2](http://akveo.com/ng2-admin/))
 - RxJS
+
+## dependency
+- bower (please install with `npm install -g bower`)
+
 
 ## Installation
 
