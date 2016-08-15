@@ -32,8 +32,7 @@ Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
 1. Go to the root repository folder and run bellow on your bash terminal
 
     ```bash
-    npm install \
-    && npm start
+    npm install && npm start
     ```
 
 1. Open your browser and access `http://0.0.0.0:3000/`
@@ -59,4 +58,4 @@ Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
 * Create, Read, Update, Delete Triggers 
 
 ##License
-[MIT](LICENSE.txt) license.
+[APACHE v.2](LICENSE.txt) license.
