@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation} from '@angular/core';
 import {FormGroup, AbstractControl, FormBuilder, Validators} from '@angular/forms';
-import {kii} from '../../config';
+import {kii,APP_HOST_URL} from '../../config';
 import {CORE_DIRECTIVES} from '@angular/common';
 import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
 import {Router} from '@angular/router';
@@ -67,7 +67,7 @@ export class Login {
             new ThingIFSDK.App(
               kii.Kii.getAppID(),
               kii.Kii.getAppKey(),
-              "https://api.kii.com")
+              APP_HOST_URL)
           );
           manager.apiAuthor = apiAuthor;
           let type = ThingIFSDK.TypedID.fromString("USER:" + ownerId);
