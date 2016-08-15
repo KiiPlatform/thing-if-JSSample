@@ -1,6 +1,3 @@
 {
-  "directory": "node_modules",
-  "resolvers": [
-    "bower-npm-resolver"
-  ]
+  "directory": "node_modules"
 }

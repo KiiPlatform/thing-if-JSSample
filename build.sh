@@ -6,4 +6,4 @@ if [ -z "${_tag}" ]; then
     _tag=${_VERSION}
 fi
 
-docker build --tag "thingIF-admin:${_tag}"  --no-cache=true .
+docker build --tag "thingif-js-sample:${_tag}"  --no-cache=true .
