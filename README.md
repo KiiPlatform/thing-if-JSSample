@@ -23,10 +23,11 @@ Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
 1. Go to the repository folder and modify `src/app/config.ts` 
 
     ```javascript
-    kii.Kii.initializeWithSite("___APPID___", "___APPKEY___", kii.KiiSite.US);
+    const APP_HOST_URL = 'https://api.kii.com';
+    kii.Kii.initializeWithSite("___APPID___", "___APPKEY___",APP_HOST_URL+'/api');
     ```
 
-1. Change above `___APPID___` , `___APPKEY___`, `kii.KiiSite.US` with your kii apps credentials.
+    Change above `___APPID___` , `___APPKEY___`, `APP_HOST_URL` with your kii apps credentials.
 
 1. Go to the root repository folder and run bellow on your bash terminal
 
