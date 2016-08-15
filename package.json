@@ -1,7 +1,7 @@
 {
-  "name": "thingIF-admin",
+  "name": "thingif-js-sample",
   "version": "0.4.0",
-  "description": "Angular 2 and Bootstrap 4 Admin Template.",
+  "description": "Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.",
   "author": "Kii Cloud",
   "license": "MIT",
   "dependencies": {
