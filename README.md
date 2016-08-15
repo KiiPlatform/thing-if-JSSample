@@ -4,35 +4,36 @@ Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
 
 ### Based on
 
-- Awesome Admin panel framework based on Angular 2, Bootstrap 4 and Webpack [NG2](http://akveo.com/ng2-admin/)
+- Awesome Admin panel framework based on Angular 2, Bootstrap 4 and Webpack ([NG2](http://akveo.com/ng2-admin/))
 - RxJS
 
 ## Installation
 
-Clone this repository :
 
-```bash
-git clone https://github.com/KiiPlatform/thing-if-JSSample
-```
+1. Clone this repository :
 
-Go to the repository folder and modify `src/app/config.ts` 
+    ```bash
+    git clone https://github.com/KiiPlatform/thing-if-JSSample
+    ```
 
-```javascript
-kii.Kii.initializeWithSite("___APPID___", "___APPKEY___", kii.KiiSite.US);
-```
+1. Go to the repository folder and modify `src/app/config.ts` 
 
-Change above `___APPID___` , `___APPKEY___`, `kii.KiiSite.US` with your kii apps credentials.
+    ```javascript
+    kii.Kii.initializeWithSite("___APPID___", "___APPKEY___", kii.KiiSite.US);
+    ```
 
-Go to the root repository folder and run bellow on your bash terminal
+1. Change above `___APPID___` , `___APPKEY___`, `kii.KiiSite.US` with your kii apps credentials.
 
-```bash
-npm install \
-&& npm start
-```
+1. Go to the root repository folder and run bellow on your bash terminal
 
-4. Open your browser and access `http://0.0.0.0:3000/`
+    ```bash
+    npm install \
+    && npm start
+    ```
 
-5. Login with your pre registered Kii User (this version does not have register functionality)
+1. Open your browser and access `http://0.0.0.0:3000/`
+
+1. Login with your pre registered Kii User (this version does not have user registration functionality)
 
 ## UI Features
 * TypeScript
