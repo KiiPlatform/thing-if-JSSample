@@ -38,6 +38,9 @@ export class Login {
 
     this.email = this.form.controls['email'];
     this.password = this.form.controls['password'];
+    console.log('login');
+    kii.KiiUser.logOut()
+    
   }
 
   public closeAlert(i: number): void {

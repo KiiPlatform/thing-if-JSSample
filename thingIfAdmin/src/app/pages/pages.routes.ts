@@ -8,11 +8,13 @@ import {Inputs} from './forms/components/inputs/inputs.component';
 import {Layouts} from './forms/components/layouts/layouts.component';
 import {Components} from './components/components.component';
 import {Command} from './command/command.component';
+import {AuthManager} from '../authManager';
 //noinspection TypeScriptValidateTypes
-export const PagesRoutes:RouterConfig = [
+export const PagesRoutes: RouterConfig = [
   {
     path: 'pages',
     component: Pages,
+    canActivate: [AuthManager],
     children: [
       {
         path: 'dashboard',
@@ -66,7 +68,7 @@ export const PagesRoutes:RouterConfig = [
           }
         }
       }
-  
+
     ]
   }
 ];
