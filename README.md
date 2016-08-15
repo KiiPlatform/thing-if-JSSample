@@ -9,13 +9,13 @@ Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
 
 ## Installation
 
-1. Clone this repository :
+Clone this repository :
 
 ```bash
 git clone https://github.com/KiiPlatform/thing-if-JSSample
 ```
 
-2. Go to the repository folder and modify `src/app/config.ts` 
+Go to the repository folder and modify `src/app/config.ts` 
 
 ```javascript
 kii.Kii.initializeWithSite("___APPID___", "___APPKEY___", kii.KiiSite.US);
@@ -23,7 +23,8 @@ kii.Kii.initializeWithSite("___APPID___", "___APPKEY___", kii.KiiSite.US);
 
 Change above `___APPID___` , `___APPKEY___`, `kii.KiiSite.US` with your kii apps credentials.
 
-3. Go to the root repository folder and run bellow on your bash terminal
+Go to the root repository folder and run bellow on your bash terminal
+
 ```bash
 npm install \
 && npm start
