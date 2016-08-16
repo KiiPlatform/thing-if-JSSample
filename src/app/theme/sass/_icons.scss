@@ -24,6 +24,7 @@
 @include svg-icon-class('bulb', 80, 80);
 @include svg-icon-class('rgb', 80, 80);
 @include svg-icon-class('tango-rgb', 80, 80);
+@include svg-icon-class('arrow', 80, 80);
 
 @mixin png-icon($url, $width, $height) {
   display: inline-block;

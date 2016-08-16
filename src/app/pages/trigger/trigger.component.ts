@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
 import {BaCard} from '../../theme/components';
-import {TriggerService, SimpleServerCode, ALARM, NOTIFY} from './trigger.service';
+import {TriggerService, SimpleServerCode} from './trigger.service';
 import {TriggerList, TriggerRow, TriggerType} from './triggerList'
 import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from 'ng2-bootstrap/ng2-bootstrap';
 import {RGB, Smartlight} from '../../pages/smartlight'
@@ -10,7 +10,7 @@ class TriggerAction {
   type: string
   row: TriggerRow = new TriggerRow()
 }
-
+const DEFAULT_ENDPOINT = 'setAlarm'
 @Component({
   selector: 'trigger',
   encapsulation: ViewEncapsulation.None,
@@ -20,8 +20,9 @@ class TriggerAction {
   directives: [MODAL_DIRECTIVES, TriggerList, BaCard, Smartlight, AlertComponent]
 })
 export class TriggerComponent {
-  conditionPower = false
-  selectedServercode: SimpleServerCode = ALARM
+  
+
+  conditionPower = false 
   actionLabel: string
   actionLabelButton: string
   @ViewChild('commandTriggerModal') public commandModal: ModalDirective;
@@ -32,7 +33,7 @@ export class TriggerComponent {
   ];
   power = true
   rgb = new RGB()
-  endpoint = 'setAlarm'
+  endpoint = DEFAULT_ENDPOINT
 
   currentAction: TriggerAction = new TriggerAction()
   triggerData: Array<TriggerRow> = [];
@@ -76,9 +77,6 @@ export class TriggerComponent {
     this.currentAction.row = event
     let isServerTrigger: boolean = event.triggerType === 2
     this.conditionPower = event.conditionPower
-    
-    
-
     this.actionLabelButton = 'Update'
     if (isServerTrigger) {
       this.actionLabel = "Update Server"
@@ -111,8 +109,10 @@ export class TriggerComponent {
     this.currentAction.row = newRow
     this.actionLabelButton = 'Create Trigger'
     if (isServer) {
+      this.endpoint = DEFAULT_ENDPOINT
       this.actionLabel = "New Server"
       this.serverModal.show()
+      this.currentAction.row.endpoint = this.endpoint
     } else {
       this.actionLabel = "New Command"
       this.commandModal.show()
@@ -128,27 +128,29 @@ export class TriggerComponent {
 
     switch (this.currentAction.type) {
       case 'new':
-        this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
+        
         promise = isServer ?
-          service.saveServerCodeTrigger(this.conditionPower, this.selectedServercode) :
+          service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null}) :
           service.saveCommandTrigger(this.conditionPower, this.rgb, this.power)
 
         if (isServer) {
           this.serverModal.hide()
           successMessage = 'new Server Code Trigger is succeded'
+          this.endpoint = DEFAULT_ENDPOINT
         } else {
           this.commandModal.hide()
           successMessage = 'new Command Trigger is succeded'
         }
         break;
       case 'update':
-        this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
+        //this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
         promise = isServer ?
-          service.saveServerCodeTrigger(this.conditionPower, this.selectedServercode, row.triggerID) :
+          service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null},row.triggerID) :
           service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID)
         if (isServer) {
           this.serverModal.hide()
           successMessage = 'Server Code Trigger is updated'
+          this.endpoint = DEFAULT_ENDPOINT
         } else {
           this.commandModal.hide()
           successMessage = 'Command Trigger is updated'
@@ -167,7 +169,6 @@ export class TriggerComponent {
       default:
         alert('error')
         break;
-
     }
 
     promise.then((result) => {

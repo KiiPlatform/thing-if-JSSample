@@ -8,11 +8,11 @@ import {TriggerRow, TriggerType} from './triggerList'
 
 export interface SimpleServerCode {
   endpoint: string
-  parameters: Object
+  parameters: Object 
 }
 
-export const ALARM: SimpleServerCode = { endpoint: 'setAlarm', parameters: { power: true } }
-export const NOTIFY: SimpleServerCode = { endpoint: 'sendNotification', parameters: { message: 'There is an intruder !!' } }
+const ALARM: SimpleServerCode = { endpoint: 'setAlarm', parameters: { power: true } }
+const NOTIFY: SimpleServerCode = { endpoint: 'sendNotification', parameters: { message: 'There is an intruder !!' } }
 
 
 @Injectable()
@@ -24,6 +24,7 @@ export class TriggerService {
       let targetID = manager.getTargetID()
       return author.deleteTrigger(targetID, triggerID)
     } else {
+      //dummy response
       return new Promise<any>((resolve) => {
         resolve('deleted')
       })
@@ -36,6 +37,7 @@ export class TriggerService {
       let targetID = manager.getTargetID()
       return author.enableTrigger(targetID, triggerID, enabled)
     } else {
+      //dummy response
       return new Promise<any>((resolve) => {
         resolve('enabled');
       })
@@ -51,6 +53,7 @@ export class TriggerService {
       let targetID = manager.getTargetID()
       return author.listTriggers(targetID)
     } else {
+      //dummy response
       return new Promise<any>((resolve) => {
         let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", true));
         let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
@@ -118,7 +121,7 @@ export class TriggerService {
       }
 
     } else {
-
+      //dummy response
       return new Promise<any>((resolve) => {
         if (triggerID) {
           resolve('new command trigger');
@@ -146,6 +149,7 @@ export class TriggerService {
       }
 
     } else {
+      //dummy response
       return new Promise<any>((resolve) => {
         if (triggerID) {
           resolve('new server trigger');
