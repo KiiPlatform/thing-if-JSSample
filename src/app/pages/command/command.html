@@ -1,0 +1,13 @@
+<div class="row">
+ <smartlight [rgb]="rgb" [power]="power"></smartlight>
+</div>
+<div class="row voffset2">
+    <div class="col-md-3 col-md-offset-10">
+        <button type="button" (click)="sendCommand()" class="btn btn-default btn-auth">SendCommand</button>
+    </div>
+</div>
+<div class="row voffset2">
+    <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
+        {{ alert?.msg }}
+    </alert>
+</div>

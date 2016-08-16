@@ -1,0 +1,132 @@
+<div class="row">
+  <div class="btn-group" role="group">
+    <button type="button" class="btn btn-success btn-with-icon" (click)="newTrigger(false)"><i class="ion-android-open"></i>New Command Trigger
+    </button>
+    <button type="button" class="btn btn-primary btn-with-icon" (click)="newTrigger(true)"><i class="ion-android-checkmark-circle"></i>New Server Code Trigger
+    </button>
+  </div>
+
+</div>
+<div class="row voffset2">
+  <ba-card title="Trigger List" baCardClass="with-scroll">
+    <trigger-list [triggerData]="triggerData" (changeTriggerStatus)="changeTriggerStatus($event)" (updateTrigger)="updateTrigger($event)"
+      (deleteTrigger)="deleteTrigger($event)"></trigger-list>
+  </ba-card>
+</div>
+<div class="row voffset2">
+  <alert *ngFor="let alert of alerts;let i = index" [type]="alert.type" dismissible="true" (close)="closeAlert(i)">
+    {{ alert?.msg }}
+  </alert>
+</div>
+<!-- Small modal -->
+<div bsModal #deleteModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="deleteModal.hide()">
+        
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h2 class="modal-title ">{{actionLabel}}</h2>
+      </div>
+      <div class="modal-body ">
+        <h4>Are you sure want to delete : {{currentAction.row.triggerID}} </h4>
+      </div>
+      <div class="modal-footer ">
+        <button type="button" class="btn btn-danger" (click)="proceed()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div bsModal #enabledModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" aria-label="Close" (click)="enabledModal.hide()">
+        
+          <span aria-hidden="true">&times;</span>
+        </button>
+
+        <h2 class="modal-title ">{{actionLabel}}</h2>
+      </div>
+      <div class="modal-body ">
+        <h4>Are you sure want to {{currentAction.row.rowStatus ? 'enable' : 'disable'}} : {{currentAction.row.triggerID}} </h4>
+      </div>
+      <div class="modal-footer ">
+        <button type="button" class="btn btn-warning" (click)="proceed()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Large modal -->
+<div bsModal #commandTriggerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" (click)="commandTriggerModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title">{{actionLabel}} Trigger</h2>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <h3> Condition :</h3>
+        </div>
+        <div class="row">
+          <div class="col-md-4 col-center-block">
+            <smartlight [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changeConditionPowerStatus($event)"></smartlight>
+            <p class="voffset2"> Triggered when : VALUE CHANGED</p>
+          </div>
+        </div>
+        <div class="row voffset2">
+          <h3> Command :</h3>
+        </div>
+        <smartlight [rgb]="rgb" [power]="power" (changePowerStatus)="changePowerStatus($event)"></smartlight>
+      </div>
+      <div class="modal-footer ">
+        <button type="button" class="btn btn-primary" (click)="proceed()">{{actionLabelButton}}</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Large modal -->
+
+<div bsModal #serverTriggerModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <button type="button" class="close" (click)="serverTriggerModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <h2 class="modal-title">{{actionLabel}} Trigger</h2>
+      </div>
+      <div class="modal-body">
+
+        <div class="row">
+          <div class="col-md-4">
+            <p class="voffset2"> Condition : </p>
+            <smartlight class="col-center-block" [showRGB]="false" [power]="conditionPower" (changePowerStatus)="changeConditionPowerStatus($event)"></smartlight>
+            <p class="voffset2"> Triggered when : VALUE CHANGED</p>
+          </div>
+          <div class="col-md-3 voffset7">
+          <i class="chart-icon i-arrow"></i>
+          </div>
+          <div class="col-md-4 voffset7">
+            <label>Execute Servercode end point :</label>
+            <input type="text" class="form-control form-control-rounded" [(ngModel)]="endpoint" placeholder="{{endpoint}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="modal-footer ">
+        <button type="button" class="btn btn-primary" (click)="proceed()">Proceed</button>
+      </div>
+    </div>
+  </div>
+</div>

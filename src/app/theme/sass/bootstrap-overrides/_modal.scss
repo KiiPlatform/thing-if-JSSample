@@ -1,0 +1,49 @@
+// Modal header
+// Top section of the modal w/ title and dismiss
+.modal-header {
+  background-color: #01579B;
+  border-bottom: 1px solid #ffffff;
+  
+  
+  
+  -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+     border-top-left-radius: 4px;
+     border-top-right-radius: 4px;
+  ////@include clearfix;
+}
+// Close icon
+.modal-header .close {
+  margin-top: -2px;
+}
+
+// Title text within header
+.modal-title {
+  margin: 0;
+  outline-color: #ffffff
+}
+
+// Modal body
+// Where all modal content resides (sibling of .modal-header and .modal-footer)
+.modal-body {
+  position: relative;
+  background-color: #0288D1;
+}
+.modal {
+  text-align: center;
+}
+// @media screen and (min-width: 768px) {
+//     .modal:before {
+//       display: inline-block;
+//       vertical-align: middle;
+//       content: " ";
+//       height: 100%;
+//     }
+// }
+// .modal-dialog {
+//   display: inline-block;
+//   text-align: left;
+//   vertical-align: middle;
+// }
