@@ -2,12 +2,12 @@
 var kii = require('kii-cloud-sdk').create();
 /*
 US   : https://api.kii.com
-JP   : https://jp-api.kii.com
-SG   : https://sg-api.kii.com
-CN3  : https://cn3-api.kii.com
-EU   : https://eu-api.kii.com
+JP   : https://api-jp.kii.com
+SG   : https://api-sg.kii.com
+CN3  : https://api-cn3.kii.com
+EU   : https://api-eu.kii.com
 */
-const APP_HOST_URL = '___APP_SITE__';
+const APP_HOST_URL = 'https://api.kii.com';
 kii.Kii.initializeWithSite("___APPID___", "___APPKEY___", APP_HOST_URL+'/api');
 
 export  { kii, APP_HOST_URL}
