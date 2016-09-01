@@ -165,6 +165,11 @@ export class TriggerService {
     }
   }
 
+  crossThingTrigger(targetID: string):boolean{
+    let manager = new AppManager();
+    return manager.getTargetID().id !== targetID
+  }
+
 
 
 }

@@ -46,7 +46,7 @@ export class TriggerRow {
                 this.rgb.green = colors.changeColor.color[1]
                 this.rgb.blue = colors.changeColor.color[2]
             }
-            this.commandTarget = trigger.command.targetID.id;
+            this.commandTarget = trigger.command.targetID.id
 
         } else if (trigger.serverCode != null) {
             this.endpoint = trigger.serverCode.endpoint

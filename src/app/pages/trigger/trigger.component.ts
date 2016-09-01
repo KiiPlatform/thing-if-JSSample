@@ -6,6 +6,8 @@ import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from 'ng2-bootstrap
 import {RGB, Smartlight} from '../../pages/smartlight'
 import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
 import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command} from 'thing-if-sdk'
+import { UiSwitchComponent } from 'angular2-ui-switch';
+
 class TriggerAction {
   type: string
   row: TriggerRow = new TriggerRow()
@@ -17,7 +19,7 @@ const DEFAULT_ENDPOINT = 'setAlarm'
   providers: [BS_VIEW_PROVIDERS, TriggerService],
   styles: [require('./trigger.scss')],
   template: require('./trigger.html'),
-  directives: [MODAL_DIRECTIVES, TriggerList, BaCard, Smartlight, AlertComponent]
+  directives: [MODAL_DIRECTIVES, TriggerList, BaCard, Smartlight, AlertComponent, UiSwitchComponent]
 })
 export class TriggerComponent {
 
@@ -38,6 +40,8 @@ export class TriggerComponent {
 
   currentAction: TriggerAction = new TriggerAction()
   triggerData: Array<TriggerRow> = [];
+
+  crossThingTrigger = false
   constructor(private _triggerService: TriggerService, private _zone: NgZone) {
     _triggerService.listTriggers().then((result: QueryResult<Trigger>) => {
       console.log(result);
@@ -62,6 +66,10 @@ export class TriggerComponent {
   }
   changeConditionPowerStatus(event: boolean) {
     this.conditionPower = event
+  }
+
+  onSwitchChange(event: boolean) {
+    this.crossThingTrigger = event;
   }
 
   changeTriggerStatus(event: TriggerRow) {
@@ -91,6 +99,7 @@ export class TriggerComponent {
       this.power = event.power
       this.actionLabel = "Update Command"
       this.commandTarget = event.commandTarget
+      this.crossThingTrigger = this._triggerService.crossThingTrigger(event.commandTarget)
       this.commandModal.show()
     }
 
@@ -127,13 +136,17 @@ export class TriggerComponent {
     let isServer = row.triggerType === TriggerType.ServerCode
     let service = this._triggerService
     let successMessage: string
+    let commandTarget: string = null
+    if(this.crossThingTrigger) {
+      commandTarget = this.commandTarget;
+    }
 
     switch (this.currentAction.type) {
       case 'new':
 
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null}) :
-          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, null, this.commandTarget)
+          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, null, commandTarget)
 
         if (isServer) {
           this.serverModal.hide()
@@ -148,7 +161,7 @@ export class TriggerComponent {
         //this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null},row.triggerID) :
-          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID, this.commandTarget)
+          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID, commandTarget)
         if (isServer) {
           this.serverModal.hide()
           successMessage = 'Server Code Trigger is updated'
