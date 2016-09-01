@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as ThingIFSDK from 'thing-if-sdk';
-import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command} from 'thing-if-sdk'
+import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command, TypedID, Types} from 'thing-if-sdk'
 import {AppManager} from '../../app.manager';
 import {kii} from '../../config';
 import {RGB} from '../../pages/smartlight'
@@ -8,7 +8,7 @@ import {TriggerRow, TriggerType} from './triggerList'
 
 export interface SimpleServerCode {
   endpoint: string
-  parameters: Object 
+  parameters: Object
 }
 
 const ALARM: SimpleServerCode = { endpoint: 'setAlarm', parameters: { power: true } }
@@ -77,7 +77,7 @@ export class TriggerService {
             title: 'Trigger 2',
             triggerID: 'command-trigger-2',
             disabled: false
-          })  
+          })
 
           tr2.command = command2
 
@@ -105,7 +105,7 @@ export class TriggerService {
     }
   }
 
-  saveCommandTrigger(conditionPower: boolean, rgb: RGB, power: boolean, triggerID?: string): Promise<any> {
+  saveCommandTrigger(conditionPower: boolean, rgb: RGB, power: boolean, triggerID?: string, commandTarget?: string): Promise<any> {
     const actions = [{ turnPower: { "power": power } }, { changeColor: { "color": rgb.toArray() } }];
     let manager = new AppManager();
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
@@ -113,7 +113,12 @@ export class TriggerService {
       let targetID = manager.getTargetID()
       let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
-      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer);
+      let commandTargetID = null;
+      if( commandTarget != null) {
+        commandTargetID = new TypedID(Types.Thing, commandTarget);
+      }
+      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer, commandTargetID);
+
       if (triggerID) {
         return author.patchCommandTrigger(targetID, triggerID, request)
       } else {

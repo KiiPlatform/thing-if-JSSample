@@ -20,9 +20,9 @@ const DEFAULT_ENDPOINT = 'setAlarm'
   directives: [MODAL_DIRECTIVES, TriggerList, BaCard, Smartlight, AlertComponent]
 })
 export class TriggerComponent {
-  
 
-  conditionPower = false 
+
+  conditionPower = false
   actionLabel: string
   actionLabelButton: string
   @ViewChild('commandTriggerModal') public commandModal: ModalDirective;
@@ -31,6 +31,7 @@ export class TriggerComponent {
   @ViewChild('enabledModal') public enabledModal: ModalDirective;
   public alerts: Array<Object> = [
   ];
+  commandTarget = null;
   power = true
   rgb = new RGB()
   endpoint = DEFAULT_ENDPOINT
@@ -89,6 +90,7 @@ export class TriggerComponent {
       this.rgb.blue = event.rgb.blue
       this.power = event.power
       this.actionLabel = "Update Command"
+      this.commandTarget = event.commandTarget
       this.commandModal.show()
     }
 
@@ -128,10 +130,10 @@ export class TriggerComponent {
 
     switch (this.currentAction.type) {
       case 'new':
-        
+
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null}) :
-          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power)
+          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, null, this.commandTarget)
 
         if (isServer) {
           this.serverModal.hide()
@@ -146,7 +148,7 @@ export class TriggerComponent {
         //this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null},row.triggerID) :
-          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID)
+          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID, this.commandTarget)
         if (isServer) {
           this.serverModal.hide()
           successMessage = 'Server Code Trigger is updated'
