@@ -11,6 +11,16 @@ export interface SimpleServerCode {
   parameters: Object
 }
 
+export class CommandTrigger {
+  constructor(
+    public conditionPower: boolean,
+    public rgb: RGB,
+    public power: boolean,
+    public triggerID?: string,
+    public commandTarget?: string
+  ){}
+}
+
 const ALARM: SimpleServerCode = { endpoint: 'setAlarm', parameters: { power: true } }
 const NOTIFY: SimpleServerCode = { endpoint: 'sendNotification', parameters: { message: 'There is an intruder !!' } }
 
@@ -105,22 +115,22 @@ export class TriggerService {
     }
   }
 
-  saveCommandTrigger(conditionPower: boolean, rgb: RGB, power: boolean, triggerID?: string, commandTarget?: string): Promise<any> {
-    const actions = [{ turnPower: { "power": power } }, { changeColor: { "color": rgb.toArray() } }];
+  saveCommandTrigger(commandTrigger: CommandTrigger): Promise<any> {
+    const actions = [{ turnPower: { "power": commandTrigger.power } }, { changeColor: { "color": commandTrigger.rgb.toArray() } }];
     let manager = new AppManager();
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
       let targetID = manager.getTargetID()
-      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
+      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", commandTrigger.conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
       let commandTargetID = null;
-      if( commandTarget != null) {
-        commandTargetID = new TypedID(Types.Thing, commandTarget);
+      if( commandTrigger.commandTarget != null) {
+        commandTargetID = new TypedID(Types.Thing, commandTrigger.commandTarget);
       }
       let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer, commandTargetID);
 
-      if (triggerID) {
-        return author.patchCommandTrigger(targetID, triggerID, request)
+      if (commandTrigger.triggerID) {
+        return author.patchCommandTrigger(targetID, commandTrigger.triggerID, request)
       } else {
         return author.postCommandTrigger(targetID, request)
       }
@@ -128,7 +138,7 @@ export class TriggerService {
     } else {
       //dummy response
       return new Promise<any>((resolve) => {
-        if (triggerID) {
+        if (commandTrigger.triggerID) {
           resolve('new command trigger');
         } else {
           resolve('update command');

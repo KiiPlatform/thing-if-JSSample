@@ -1,6 +1,6 @@
 import {Component, ViewEncapsulation, ViewChild, NgZone} from '@angular/core';
 import {BaCard} from '../../theme/components';
-import {TriggerService, SimpleServerCode} from './trigger.service';
+import {TriggerService, SimpleServerCode, CommandTrigger} from './trigger.service';
 import {TriggerList, TriggerRow, TriggerType} from './triggerList'
 import {MODAL_DIRECTIVES, BS_VIEW_PROVIDERS, ModalDirective} from 'ng2-bootstrap/ng2-bootstrap';
 import {RGB, Smartlight} from '../../pages/smartlight'
@@ -33,7 +33,7 @@ export class TriggerComponent {
   @ViewChild('enabledModal') public enabledModal: ModalDirective;
   public alerts: Array<Object> = [
   ];
-  commandTarget = null;
+  commandTarget = null
   power = true
   rgb = new RGB()
   endpoint = DEFAULT_ENDPOINT
@@ -146,7 +146,7 @@ export class TriggerComponent {
 
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null}) :
-          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, null, commandTarget)
+          service.saveCommandTrigger(new CommandTrigger(this.conditionPower, this.rgb, this.power, null, commandTarget))
 
         if (isServer) {
           this.serverModal.hide()
@@ -161,7 +161,7 @@ export class TriggerComponent {
         //this.selectedServercode = this.endpoint == ALARM.endpoint ? ALARM : NOTIFY
         promise = isServer ?
           service.saveServerCodeTrigger(this.conditionPower, { endpoint: this.endpoint,parameters:null},row.triggerID) :
-          service.saveCommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID, commandTarget)
+          service.saveCommandTrigger(new CommandTrigger(this.conditionPower, this.rgb, this.power, row.triggerID, commandTarget))
         if (isServer) {
           this.serverModal.hide()
           successMessage = 'Server Code Trigger is updated'
