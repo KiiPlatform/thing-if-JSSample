@@ -5,7 +5,7 @@ import {CORE_DIRECTIVES} from '@angular/common';
 import { AlertComponent } from 'ng2-bootstrap/ng2-bootstrap';
 import {Router} from '@angular/router';
 import * as ThingIFSDK from 'thing-if-sdk';
-import {OnboardingResult,TypedID,Types} from 'thing-if-sdk'
+import {OnboardingResult,TypedID,Types, DataGroupingInterval, LayoutPosition} from 'thing-if-sdk'
 import {AppManager} from '../../app.manager';
 import {Http, Headers} from '@angular/http';
 
@@ -40,7 +40,7 @@ export class Login {
     this.password = this.form.controls['password'];
     console.log('login');
     kii.KiiUser.logOut()
-    
+
   }
 
   public closeAlert(i: number): void {
@@ -72,7 +72,16 @@ export class Login {
           manager.apiAuthor = apiAuthor;
           let type = ThingIFSDK.TypedID.fromString("USER:" + ownerId);
           manager.issuer = type
-          let onboardRequest = new ThingIFSDK.OnboardWithVendorThingIDRequest("vendorthing-id", "password", type);
+          let onboardRequest = new ThingIFSDK.OnboardWithVendorThingIDRequest(
+            "vendorthing-id3",
+            "password",
+            type,
+            null,
+            null,
+            "v1.0",
+            DataGroupingInterval.INTERVAL_12_HOURS,
+            LayoutPosition.STANDALONE
+          );
           return manager.apiAuthor.onboardWithVendorThingID(onboardRequest);
         }
       ).then(
@@ -83,7 +92,7 @@ export class Login {
           manager.onboardingResult = res;
           window.location.href = '#/pages/dashboard';
           manager.updateState();
-          
+
         }
         ).catch(
         function (error) {
