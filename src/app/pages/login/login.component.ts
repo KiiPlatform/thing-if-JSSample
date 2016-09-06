@@ -40,7 +40,7 @@ export class Login {
     this.password = this.form.controls['password'];
     console.log('login');
     kii.KiiUser.logOut()
-    
+
   }
 
   public closeAlert(i: number): void {
@@ -83,7 +83,7 @@ export class Login {
           manager.onboardingResult = res;
           window.location.href = '#/pages/dashboard';
           manager.updateState();
-          
+
         }
         ).catch(
         function (error) {

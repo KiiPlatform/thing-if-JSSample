@@ -24,7 +24,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" aria-label="Close" (click)="deleteModal.hide()">
-        
+
           <span aria-hidden="true">&times;</span>
         </button>
 
@@ -45,7 +45,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" aria-label="Close" (click)="enabledModal.hide()">
-        
+
           <span aria-hidden="true">&times;</span>
         </button>
 
@@ -74,6 +74,15 @@
       </div>
       <div class="modal-body">
         <div class="row">
+          <h3> Cross Thing Trigger :</h3>
+          <ui-switch [checked]="crossThingTrigger" (change)="onSwitchChange($event)" size="small" ></ui-switch>
+        </div>
+        <div class="row" *ngIf="crossThingTrigger">
+          <div class="col-md-4 col-center-block">
+            Command Target ID: <input type="text" class="form-control form-control-rounded" [(ngModel)]="commandTarget" name="commandTarget" placeholder="thing id of command target"/>
+          </div>
+        </div>
+        <div class="row voffset2">
           <h3> Condition :</h3>
         </div>
         <div class="row">

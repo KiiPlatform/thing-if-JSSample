@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import * as ThingIFSDK from 'thing-if-sdk';
-import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command} from 'thing-if-sdk'
+import {OnboardingResult, ThingIFAPI, QueryResult, Trigger, Command, TypedID, Types} from 'thing-if-sdk'
 import {AppManager} from '../../app.manager';
 import {kii} from '../../config';
 import {RGB} from '../../pages/smartlight'
@@ -8,7 +8,17 @@ import {TriggerRow, TriggerType} from './triggerList'
 
 export interface SimpleServerCode {
   endpoint: string
-  parameters: Object 
+  parameters: Object
+}
+
+export class CommandTrigger {
+  constructor(
+    public conditionPower: boolean,
+    public rgb: RGB,
+    public power: boolean,
+    public triggerID?: string,
+    public commandTarget?: string
+  ){}
 }
 
 const ALARM: SimpleServerCode = { endpoint: 'setAlarm', parameters: { power: true } }
@@ -77,7 +87,7 @@ export class TriggerService {
             title: 'Trigger 2',
             triggerID: 'command-trigger-2',
             disabled: false
-          })  
+          })
 
           tr2.command = command2
 
@@ -105,17 +115,22 @@ export class TriggerService {
     }
   }
 
-  saveCommandTrigger(conditionPower: boolean, rgb: RGB, power: boolean, triggerID?: string): Promise<any> {
-    const actions = [{ turnPower: { "power": power } }, { changeColor: { "color": rgb.toArray() } }];
+  saveCommandTrigger(commandTrigger: CommandTrigger): Promise<any> {
+    const actions = [{ turnPower: { "power": commandTrigger.power } }, { changeColor: { "color": commandTrigger.rgb.toArray() } }];
     let manager = new AppManager();
     if (manager.onboardingResult != null && manager.onboardingResult != undefined) {
       let author = manager.apiAuthor;
       let targetID = manager.getTargetID()
-      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
+      let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", commandTrigger.conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
-      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer);
-      if (triggerID) {
-        return author.patchCommandTrigger(targetID, triggerID, request)
+      let commandTargetID = null;
+      if( commandTrigger.commandTarget != null) {
+        commandTargetID = new TypedID(Types.Thing, commandTrigger.commandTarget);
+      }
+      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer, commandTargetID);
+
+      if (commandTrigger.triggerID) {
+        return author.patchCommandTrigger(targetID, commandTrigger.triggerID, request)
       } else {
         return author.postCommandTrigger(targetID, request)
       }
@@ -123,7 +138,7 @@ export class TriggerService {
     } else {
       //dummy response
       return new Promise<any>((resolve) => {
-        if (triggerID) {
+        if (commandTrigger.triggerID) {
           resolve('new command trigger');
         } else {
           resolve('update command');
@@ -158,6 +173,11 @@ export class TriggerService {
         }
       })
     }
+  }
+
+  crossThingTrigger(targetID: string):boolean{
+    let manager = new AppManager();
+    return manager.getTargetID().id !== targetID
   }
 
 
