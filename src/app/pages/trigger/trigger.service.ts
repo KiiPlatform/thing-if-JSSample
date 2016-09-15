@@ -127,7 +127,7 @@ export class TriggerService {
       if( commandTrigger.commandTarget != null) {
         commandTargetID = new TypedID(Types.Thing, commandTrigger.commandTarget);
       }
-      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, actions, statePredicate,manager.issuer, commandTargetID);
+      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, commandTargetID, actions, statePredicate,manager.issuer);
 
       if (commandTrigger.triggerID) {
         return author.patchCommandTrigger(targetID, commandTrigger.triggerID, request)
