@@ -78,7 +78,7 @@ export class Login {
             type,
             null,
             null,
-            "v1.0",
+            null,
             DataGroupingInterval.INTERVAL_12_HOURS,
             LayoutPosition.STANDALONE
           );

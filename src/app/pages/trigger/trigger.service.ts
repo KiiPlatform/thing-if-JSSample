@@ -126,12 +126,16 @@ export class TriggerService {
       let commandTargetID = null;
       if( commandTrigger.commandTarget != null) {
         commandTargetID = new TypedID(Types.Thing, commandTrigger.commandTarget);
+      }else{
+        commandTargetID = targetID;
       }
-      let request = new ThingIFSDK.CommandTriggerRequest("smart-light", 1, commandTargetID, actions, statePredicate,manager.issuer);
 
+      let commandObject = new ThingIFSDK.TriggerCommandObject("smart-light", 1, actions, commandTargetID,manager.issuer);
       if (commandTrigger.triggerID) {
+        let request = new ThingIFSDK.PatchCommandTriggerRequest(commandObject, statePredicate);
         return author.patchCommandTrigger(targetID, commandTrigger.triggerID, request)
       } else {
+        let request = new ThingIFSDK.PostCommandTriggerRequest(commandObject, statePredicate);
         return author.postCommandTrigger(targetID, request)
       }
 
@@ -156,10 +160,11 @@ export class TriggerService {
       let serverCode = new ThingIFSDK.ServerCode(sc.endpoint, null, null, sc.parameters);
       let condition = new ThingIFSDK.Condition(new ThingIFSDK.Equals("power", conditionPower));
       let statePredicate = new ThingIFSDK.StatePredicate(condition, ThingIFSDK.TriggersWhen.CONDITION_CHANGED);
-      let request = new ThingIFSDK.ServerCodeTriggerRequest(serverCode, statePredicate);
       if (triggerID) {
+        let request = new ThingIFSDK.PostServerCodeTriggerRequest(serverCode, statePredicate);
         return author.patchServerCodeTrigger(targetID, triggerID, request)
       } else {
+        let request = new ThingIFSDK.PatchServerCodeTriggerRequest(serverCode, statePredicate);
         return author.postServerCodeTrigger(targetID, request)
       }
 
