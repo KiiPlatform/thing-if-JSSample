@@ -188,7 +188,6 @@ export class TriggerComponent {
 
     promise.then((result) => {
       console.log(result);
-
       return service.listTriggers()
     }).then((result: QueryResult<Trigger>) => {
       console.log(result);
