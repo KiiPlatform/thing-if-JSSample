@@ -1,3 +1,7 @@
+# Deprecation Notice
+Since it is difficult to maintain this repository, which built with old version of angular, we finally decided to terminate its maintenances.
+For browser sample of thing-if-JSSDK, please refer [the new react sample](https://github.com/KiiPlatform/thing-if-ReactSample)
+
 # thing-if-JSSample
 
 Kii cloud JS SDK Sample web application using Angular 2 and Bootstrap 4.
